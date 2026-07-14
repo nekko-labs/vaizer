@@ -6,9 +6,9 @@ Agents run skills, branch on decisions, and grind through long loops, mostly out
 
 ## What it does
 
-- **Skills — workflow visualizer.** Browse a catalog of skills and see exactly how each one runs as an n8n / Make-style node graph (trigger to output, with branches and loops). Click any step for a plain-English explanation. Install from the [marketplace](https://github.com/nekko-labs/nekko-dojo-skills), grab a `.zip`, or upvote what you like.
-- **Skills — break down any public skill.** Paste a GitHub URL (or pick one of Anthropic's official skills) and Vaizer fetches its `SKILL.md`, parses it, and draws the same workflow, even for skills that aren't in the catalog.
-- **Watch — agent-loop monitor.** Watch a long-running loop as a journey toward victory: milestones on a path, a marker that advances, and a feed of what the agent just tried and learned. Ships with a demo run; built to accept real run data later.
+- **Skills, workflow visualizer.** Browse a catalog of skills and see exactly how each one runs as an n8n / Make-style node graph (trigger to output, with branches and loops). Click any step for a plain-English explanation. Install from the [marketplace](https://github.com/nekko-labs/nekko-dojo-skills), grab a `.zip`, or upvote what you like.
+- **Skills, break down any public skill.** Paste a GitHub URL (or pick one of Anthropic's official skills) and Vaizer fetches its `SKILL.md`, parses it, and draws the same workflow, even for skills that aren't in the catalog.
+- **Watch, agent-loop monitor.** Watch a long-running loop as a journey toward victory: milestones on a path, a marker that advances, and a feed of what the agent just tried and learned. Ships with a demo run; built to accept real run data later.
 
 ## Stack
 

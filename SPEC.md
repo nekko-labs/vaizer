@@ -4,7 +4,7 @@ last-updated: 2026-07-15
 owner: Philip
 ---
 
-# Spec — Vaizer
+# Spec: Vaizer
 
 > **This is the source of truth for the project.** It describes *what* we're building and *why*: vision, users, journeys, the feature set, and what success looks like. It is **not** about stack or technical design (that lives in `TASKS.md`). It is a **living artifact**: every prompt that adds or changes a feature updates this file so it always describes the system as it actually is and intends to be.
 
@@ -29,10 +29,10 @@ Vaizer starts from the skills-workflow visualizer originally built inside Nekko 
 
 ## Who It's For
 
-1. **Agent builders / power users** (primary) — people running Claude Code, agent SDKs, and skills daily who want to understand and trust what their agents do.
-2. **Skill authors** — want to see their skill's workflow rendered, catch surprises, and share a visual of how it runs.
-3. **Teams running long autonomous jobs** — want an at-a-glance "is it making progress?" view of loops that would otherwise be a log tail.
-4. **The curious** — anyone who wants to break down a public skill (e.g. Anthropic's official ones) and see how it's built.
+1. **Agent builders / power users** (primary), people running Claude Code, agent SDKs, and skills daily who want to understand and trust what their agents do.
+2. **Skill authors**, want to see their skill's workflow rendered, catch surprises, and share a visual of how it runs.
+3. **Teams running long autonomous jobs**, want an at-a-glance "is it making progress?" view of loops that would otherwise be a log tail.
+4. **The curious**, anyone who wants to break down a public skill (e.g. Anthropic's official ones) and see how it's built.
 
 ## User Journeys & Experiences
 
@@ -67,7 +67,7 @@ The front door. Explains the pitch (see how your agents work and what they're fo
 - Feature section: the agent-loop monitor, with a mini path-to-victory preview `[shipped]`
 - Closing CTA + Nekko Labs attribution footer `[shipped]`
 
-### Skills — workflow visualizer (main feature)
+### Skills: workflow visualizer (main feature)
 Browse a catalog of skills and see exactly how each one runs, as an n8n / Make-style node graph. Ported and expanded from Nekko Dojo. *Why:* the core "understand your agent" capability.
 
 - Skills catalog: filterable by search + trust tier + category `[shipped]`
@@ -75,7 +75,7 @@ Browse a catalog of skills and see exactly how each one runs, as an n8n / Make-s
 - Trust tiers (Nekko official / community / curated), install commands, per-skill `.zip` download, community upvotes + feedback (Supabase-backed) `[shipped]`
 - Marketplace install flow from `nekko-labs/nekko-dojo-skills` `[shipped]`
 
-### Skills — break down any public skill (expansion)
+### Skills: break down any public skill (expansion)
 Point Vaizer at *any* public skill and get the same workflow breakdown, even if it isn't in our catalog. *Why:* the visualizer is only as useful as the set of skills it can read; opening it to all public skills (e.g. Anthropic's official ones) makes it a general tool.
 
 - "Break down a skill" entry: paste a GitHub URL (repo, folder, or raw `SKILL.md`) `[shipped]`
@@ -85,7 +85,7 @@ Point Vaizer at *any* public skill and get the same workflow breakdown, even if 
 - Graceful handling of unreachable / unparseable sources `[shipped]`
 - Deeper parse (tools/allowed-tools, multi-file skills, sub-skills) `[planned]`
 
-### Watch — agent-loop monitor (game-like)
+### Watch: agent-loop monitor (game-like)
 A page for watching long-running agent loops as a journey toward victory. *Why:* long autonomous runs are opaque; a path-to-victory framing answers "is it making progress?" at a glance and makes watching genuinely engaging.
 
 - A "run" model: goal, milestones along a path, iterations/attempts, current state, momentum toward victory `[shipped]`

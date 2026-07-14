@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
-  Vaizer theme — "Signal".
+  Vaizer theme: "Signal".
   A single dark node-graph palette: a deep-slate canvas with a faint dot-grid
   (echoing the workflow canvas), warm-white ink, a violet-indigo primary accent,
   and a cyan "signal" secondary for focus and progress. Semantic colours live as
@@ -72,7 +72,7 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
-   Signal glow + dot-grid — the ambient backdrop. Decorative only; sits in a
+   Signal glow + dot-grid: the ambient backdrop. Decorative only; sits in a
    fixed layer (rendered in layout.tsx as [data-signal-bg]) behind all content.
    The dot-grid ties the whole app to the workflow canvas's own grid.
 --------------------------------------------------------------------------- */
@@ -149,7 +149,7 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
-   Watch — the current attempt pulses; the victory marker breathes.
+   Watch: the current attempt pulses; the victory marker breathes.
 --------------------------------------------------------------------------- */
 @keyframes vaizer-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
@@ -182,7 +182,7 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
-   Prose — long-form reading styles (parsed-skill descriptions, etc.).
+   Prose: long-form reading styles (parsed-skill descriptions, etc.).
 --------------------------------------------------------------------------- */
 .prose {
   max-width: 68ch;
