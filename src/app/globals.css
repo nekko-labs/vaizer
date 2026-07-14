@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+/*
+  Vaizer theme — "Signal".
+  A single dark node-graph palette: a deep-slate canvas with a faint dot-grid
+  (echoing the workflow canvas), warm-white ink, a violet-indigo primary accent,
+  and a cyan "signal" secondary for focus and progress. Semantic colours live as
+  CSS vars on :root; @theme maps them to Tailwind utilities (bg-bg, text-fg,
+  text-muted, border-border, text-accent, bg-accent, ...) so the whole app
+  re-skins from here.
+*/
+
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-signal: var(--signal);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, "SF Mono", Menlo, Monaco,
+    "Cascadia Code", "Roboto Mono", monospace;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* Deep slate canvas */
+  --bg: #0a0b10;
+  --surface: #12141c;
+  --surface-2: #1a1d28;
+  --fg: #eef0f6;
+  --muted: #8b90a4;
+  --subtle: #b7bccb;
+  --border: rgba(238, 240, 246, 0.12);
+
+  /* Violet-indigo primary + cyan signal */
+  --accent: #7c74ff;
+  --accent-hover: #948dff;
+  --accent-fg: #0a0b10;
+  --signal: #34e6d6;
+
+  --node-bg: #12141c;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------------------------------------------------------------------------
+   Signal glow + dot-grid — the ambient backdrop. Decorative only; sits in a
+   fixed layer (rendered in layout.tsx as [data-signal-bg]) behind all content.
+   The dot-grid ties the whole app to the workflow canvas's own grid.
+--------------------------------------------------------------------------- */
+[data-signal-bg] {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+[data-signal-bg]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    var(--border) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 30%, transparent 75%);
+  opacity: 0.55;
+}
+[data-signal-bg] span {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  will-change: transform;
+}
+[data-signal-bg] .glow-1 {
+  top: -260px;
+  left: 2%;
+  width: 720px;
+  height: 720px;
+  background: radial-gradient(circle, rgba(124, 116, 255, 0.28), transparent 65%);
+  animation: signalDrift1 28s ease-in-out infinite alternate;
+}
+[data-signal-bg] .glow-2 {
+  top: -80px;
+  right: -180px;
+  width: 620px;
+  height: 620px;
+  background: radial-gradient(circle, rgba(52, 230, 214, 0.16), transparent 65%);
+  animation: signalDrift2 34s ease-in-out infinite alternate;
+}
+
+@keyframes signalDrift1 {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(120px, 60px) scale(1.15); }
+}
+@keyframes signalDrift2 {
+  from { transform: translate(0, 0) scale(1.1); }
+  to { transform: translate(-120px, 40px) scale(0.95); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-signal-bg] span {
+    animation: none;
+  }
+}
+
+/* Base-layer so `text-*` utilities (e.g. on button-style links) still win. */
+@layer base {
+  a {
+    color: inherit;
+  }
+}
+
+/* Visible focus for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+   Watch — the current attempt pulses; the victory marker breathes.
+--------------------------------------------------------------------------- */
+@keyframes vaizer-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.92); }
+}
+.vaizer-pulse {
+  animation: vaizer-pulse 1.4s ease-in-out infinite;
+}
+@keyframes vaizer-breathe {
+  0%, 100% { filter: drop-shadow(0 0 2px var(--signal)); }
+  50% { filter: drop-shadow(0 0 10px var(--signal)); }
+}
+.vaizer-breathe {
+  animation: vaizer-breathe 2.2s ease-in-out infinite;
+}
+@keyframes vaizer-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.vaizer-enter {
+  animation: vaizer-enter 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+/* the track fill eases toward its target width */
+.vaizer-fill {
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .vaizer-pulse, .vaizer-breathe, .vaizer-enter { animation: none; }
+  .vaizer-fill { transition: none; }
+}
+
+/* ---------------------------------------------------------------------------
+   Prose — long-form reading styles (parsed-skill descriptions, etc.).
+--------------------------------------------------------------------------- */
+.prose {
+  max-width: 68ch;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--fg);
+}
+.prose > * + * { margin-top: 1.25em; }
+.prose h2, .prose h3, .prose h4 { font-weight: 650; line-height: 1.25; }
+.prose h2 { font-size: 1.5rem; margin-top: 2em; }
+.prose h3 { font-size: 1.2rem; margin-top: 1.6em; }
+.prose a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.prose a:hover { color: var(--accent-hover); }
+.prose ul, .prose ol { padding-left: 1.5em; }
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose li + li { margin-top: 0.4em; }
+.prose code {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.12em 0.38em;
+  font-size: 0.875em;
+  font-family: var(--font-mono);
+}
