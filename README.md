@@ -1,6 +1,6 @@
 # Vaizer
 
-**See how your agents work and what they're focused on.** A [Nekko Labs](https://nekkolabs.com) product, served at [vaizer.com](https://vaizer.com).
+**See how your agents work and what they're focused on.** A [Nekko Labs](https://nekkolabs.com) product, served at [vaizer.app](https://vaizer.app).
 
 Agents run skills, branch on decisions, and grind through long loops, mostly out of sight. Vaizer turns that black box into something you can read and watch.
 

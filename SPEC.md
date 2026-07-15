@@ -14,7 +14,7 @@ owner: Philip
 
 Agents are increasingly doing real work: running skills, calling tools, branching on decisions, and grinding through long autonomous loops. But that work is mostly invisible. You paste a prompt, wait, and hope. Vaizer turns that black box into something you can watch and understand: the *shape* of a skill's run before you invoke it, and the *live progress* of a long-running agent loop as it tries things and pushes toward a goal.
 
-Served at **vaizer.com**, a Nekko Labs product.
+Served at **vaizer.app**, a Nekko Labs product.
 
 The feel is a calm, technical observability tool: dark node-graph canvas, precise typography, everything readable at a glance. Less "dashboard for suits," more "the instrument panel a builder actually keeps open."
 
@@ -111,7 +111,7 @@ This project is NOT:
 
 ## Open Questions
 
-- Hosting: deploy on Vercel (nekkolabs team), served at `vaizer.com` (DNS moved over later by Philip).
+- Hosting: deploy on Vercel (nekkolabs team), served at `vaizer.app` (DNS moved over later by Philip).
 - Supabase env not yet set on Vercel (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `VOTE_SALT`); votes/feedback stay inert until then. The same schema as Dojo (`supabase/schema.sql`) applies.
 - Public-skill breakdown parses `SKILL.md` heuristically; accuracy on complex/multi-file skills is a known limitation to deepen.
 - Watch currently plays a demo run; the shape of the real run feed (SSE endpoint? uploaded JSON? a small SDK hook?) is still open.

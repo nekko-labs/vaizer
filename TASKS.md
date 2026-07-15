@@ -17,7 +17,7 @@ owner: Philip
 - **Supabase** (optional) for skill upvotes + feedback, via SECURITY-DEFINER RPCs (`cast_vote`, `submit_feedback`) and a read-only view. Degrades to inert when env is unset.
 - **PostHog** (optional, privacy-conscious) + **Vercel Analytics** for product events.
 - **JSZip** to assemble per-skill `.zip` downloads on demand from the marketplace repo.
-- Hosted on **Vercel** (nekkolabs team), domain **vaizer.com**.
+- Hosted on **Vercel** (nekkolabs team), domain **vaizer.app**.
 
 ### Architecture
 - Single Next.js app at the domain root (no basePath). Routes:
@@ -53,8 +53,8 @@ owner: Philip
 ## Tasks
 
 ### Now
-- [ ] Connect Vercel project (nekkolabs team) + set `NEXT_PUBLIC_SITE_URL=https://vaizer.com`, added 2026-07-15
-- [ ] Point vaizer.com DNS at Vercel (Philip, later), added 2026-07-15
+- [ ] Connect Vercel project (nekkolabs team) + set `NEXT_PUBLIC_SITE_URL=https://vaizer.app`, added 2026-07-15
+- [ ] Point vaizer.app DNS at Vercel (Philip, later), added 2026-07-15
 - [ ] Set Supabase + PostHog env on Vercel to light up votes/feedback/analytics, added 2026-07-15
 
 ### Backlog

@@ -11,7 +11,7 @@ export const site = {
     'Vaizer helps you see how your AI agents work and what they are focused on. Break down any skill into a readable workflow, and watch long-running agent loops make their way toward a goal.',
   // Absolute URL used for metadata. Vaizer lives at its own domain.
   // Use `||` (not `??`) so an empty-string env var falls back too.
-  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://vaizer.com',
+  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://vaizer.app',
   discordUrl:
     process.env.NEXT_PUBLIC_DISCORD_URL || 'https://discord.gg/nekkolabs',
   githubUrl:
