@@ -145,7 +145,7 @@ export default function HomePage() {
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/skills/inspect"
+              href="/skills"
               className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 text-base font-semibold text-accent-fg transition-transform hover:-translate-y-0.5"
             >
               Break down a skill
