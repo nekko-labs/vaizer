@@ -24,9 +24,9 @@ export default function HomePage() {
           </Reveal>
           <Reveal load delay={0.08}>
             <h1 className="mt-6 text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
-              See how your agents
+              See how your agents, skills, and harness
               <br />
-              <span className="text-accent">work</span> and what they&apos;re{' '}
+              <span className="text-accent">works</span> and what they&apos;re{' '}
               <span className="text-signal">focused on</span>.
             </h1>
           </Reveal>
@@ -101,7 +101,7 @@ export default function HomePage() {
       <section className="mt-24">
         <Reveal>
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Built on one idea: agents are legible.
+            Built on one idea: You can visualize anything.
           </h2>
         </Reveal>
         <Stagger className="mt-8 grid gap-5 sm:grid-cols-3">
