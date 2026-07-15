@@ -36,8 +36,8 @@ Vaizer starts from the skills-workflow visualizer originally built inside Nekko 
 
 ## User Journeys & Experiences
 
-1. **Understand a skill:** Home → Skills → pick a skill (or search a public one by name/URL) → read its workflow graph, click each step to learn what it does and where it branches → decide to install or move on.
-2. **Break down a public skill:** Home → Skills → "Break down a skill" → paste a GitHub URL or pick a known public skill → Vaizer fetches its `SKILL.md`, parses it into a workflow graph, and explains each step.
+1. **Find and understand a skill:** Home → Skills → one search box searches our catalog and Anthropic's official skills at once (or browse the same as trust-tiered lists below) → click any result and its workflow graph opens inline → click each step to learn what it does and where it branches → decide to install or move on.
+2. **Break down a public skill:** In that same Skills search, paste any public GitHub URL (repo, folder, or raw `SKILL.md`) → a "Break down this URL" result appears → click it and Vaizer fetches its `SKILL.md`, parses it into a workflow graph inline, and explains each step. No separate page: breaking down any skill is just searching.
 3. **Watch an agent loop:** Home → Watch → open a run (demo run, or a live run fed to Vaizer) → see the path to victory, current attempt, what it just tried, and how far along it is → keep it open in a side monitor while the agent works.
 4. **Discover Vaizer:** Land on the marketing home → grasp the two capabilities in one scroll → jump into Skills or Watch.
 
@@ -67,23 +67,24 @@ The front door. Explains the pitch (see how your agents work and what they're fo
 - Feature section: the agent-loop monitor, with a mini path-to-victory preview `[shipped]`
 - Closing CTA + Nekko Labs attribution footer `[shipped]`
 
-### Skills: workflow visualizer (main feature)
-Browse a catalog of skills and see exactly how each one runs, as an n8n / Make-style node graph. Ported and expanded from Nekko Dojo. *Why:* the core "understand your agent" capability.
+### Skills: search-first workflow visualizer (main feature)
+One search box is the whole entry point to the Skills page. You search across our own catalog and any public skill at once; clicking any result opens its workflow graph (an n8n / Make-style node canvas) inline, so finding a skill and seeing how it runs is a single flow. Ported and expanded from Nekko Dojo. *Why:* the core "understand your agent" capability, with the lowest-friction path from "which skill?" to "here's how it runs."
 
-- Skills catalog: filterable by search + trust tier + category `[shipped]`
-- Per-skill detail page with the interactive workflow graph (trigger → context → agent → tools → decisions → loops → output); click any step for an explanation `[shipped]`
-- Trust tiers (Nekko official / community / curated), install commands, per-skill `.zip` download, community upvotes + feedback (Supabase-backed) `[shipped]`
-- Marketplace install flow from `nekko-labs/nekko-dojo-skills` `[shipped]`
+- Unified search: one box matches the local catalog **and** a live index of Anthropic's official skills; paste any public GitHub URL and it becomes a "Break down this URL" result `[shipped]`
+- Click-to-visualize: selecting any result (catalog, Anthropic, or pasted URL) opens the interactive workflow graph inline (trigger → context → agent → tools → decisions → loops → output); click any step for an explanation, then "Back to search" `[shipped]`
+- Browse mode (empty query): the same skills as trust-tiered lists below (Nekko official / community / curated) plus a live "Anthropic official" group, filterable by category `[shipped]`
+- Live Anthropic index: `/api/anthropic-skills` reads the `anthropics/skills` repo tree + frontmatter server-side (cached 1h, no token, env-optional), deduped against catalog entries `[shipped]`
+- Per-skill detail page (deep link / SEO) with the same graph, trust tiers, install commands, per-skill `.zip` download, community upvotes + feedback (Supabase-backed) `[shipped]`
+- Marketplace install flow from `nekko-labs/nekko-dojo-skills`, shown inline for installable catalog skills `[shipped]`
 
-### Skills: break down any public skill (expansion)
-Point Vaizer at *any* public skill and get the same workflow breakdown, even if it isn't in our catalog. *Why:* the visualizer is only as useful as the set of skills it can read; opening it to all public skills (e.g. Anthropic's official ones) makes it a general tool.
+### Skills: break down any public skill (folded into search)
+Point Vaizer at *any* public skill and get the same workflow breakdown, even if it isn't in our catalog. This is no longer a separate page: it is the URL-paste path of the unified search (the old `/skills/inspect` route redirects to `/skills`). *Why:* the visualizer is only as useful as the set of skills it can read; opening it to all public skills (e.g. Anthropic's official ones) makes it a general tool.
 
-- "Break down a skill" entry: paste a GitHub URL (repo, folder, or raw `SKILL.md`) `[shipped]`
-- Curated shortcuts to well-known public skills (Anthropic official skills) `[shipped]`
-- Server-side fetch of the skill's `SKILL.md` + parse of frontmatter (name, description) and body into a workflow graph via a heuristic step parser `[shipped]`
-- Render the parsed skill through the same visualizer + step explainer `[shipped]`
+- Paste a GitHub URL (repo, folder, raw `SKILL.md`, or bare `owner/repo/path`) into the Skills search `[shipped]`
+- Server-side fetch of the skill's `SKILL.md` (`/api/inspect`) + parse of frontmatter (name, description, tools) and body into a workflow graph via a heuristic step parser `[shipped]`
+- Render the parsed skill through the same visualizer + step explainer, inline on the search page `[shipped]`
 - Graceful handling of unreachable / unparseable sources `[shipped]`
-- Deeper parse (tools/allowed-tools, multi-file skills, sub-skills) `[planned]`
+- Deeper parse (multi-file skills, sub-skills) `[planned]`
 
 ### Watch: agent-loop monitor (game-like)
 A page for watching long-running agent loops as a journey toward victory. *Why:* long autonomous runs are opaque; a path-to-victory framing answers "is it making progress?" at a glance and makes watching genuinely engaging.

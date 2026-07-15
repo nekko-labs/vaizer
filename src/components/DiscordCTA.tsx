@@ -19,7 +19,7 @@ export function DiscordCTA({ className = '' }: { className?: string }) {
       </p>
       <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
         <Link
-          href="/skills/inspect"
+          href="/skills"
           className="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 font-semibold text-accent-fg transition-colors hover:bg-accent-hover"
         >
           Break down a skill
