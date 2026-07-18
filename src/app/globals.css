@@ -1,13 +1,15 @@
 @import "tailwindcss";
 
 /*
-  Vaizer theme: "Signal".
-  A single dark node-graph palette: a deep-slate canvas with a faint dot-grid
-  (echoing the workflow canvas), warm-white ink, a violet-indigo primary accent,
-  and a cyan "signal" secondary for focus and progress. Semantic colours live as
-  CSS vars on :root; @theme maps them to Tailwind utilities (bg-bg, text-fg,
-  text-muted, border-border, text-accent, bg-accent, ...) so the whole app
-  re-skins from here.
+  Vaizer theme: "Vellum".
+  A single light node-graph palette: a warm bone/vellum canvas (lighter than
+  the old dark "Signal" theme, but never plain white) with a faint dot-grid
+  echoing the workflow canvas, near-black ink, an indigo-ink primary accent,
+  and a deep-teal "signal" secondary for focus and progress. Reads like a
+  technical drawing on paper. Semantic colours live as CSS vars on :root;
+  @theme maps them to Tailwind utilities (bg-bg, text-fg, text-muted,
+  border-border, text-accent, bg-accent, ...) so the whole app re-skins from
+  here.
 */
 
 @theme {
@@ -30,24 +32,24 @@
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* Deep slate canvas */
-  --bg: #0a0b10;
-  --surface: #12141c;
-  --surface-2: #1a1d28;
-  --fg: #eef0f6;
-  --muted: #8b90a4;
-  --subtle: #b7bccb;
-  --border: rgba(238, 240, 246, 0.12);
+  /* Warm vellum canvas: light, but never white */
+  --bg: #ece9e1;
+  --surface: #f5f3ec;
+  --surface-2: #fbfaf5;
+  --fg: #20222b;
+  --muted: #6b6e7c;
+  --subtle: #474a58;
+  --border: rgba(32, 34, 43, 0.14);
 
-  /* Violet-indigo primary + cyan signal */
-  --accent: #7c74ff;
-  --accent-hover: #948dff;
-  --accent-fg: #0a0b10;
-  --signal: #34e6d6;
+  /* Indigo-ink primary + deep-teal signal */
+  --accent: #5646d4;
+  --accent-hover: #4536c0;
+  --accent-fg: #fbfaf5;
+  --signal: #0e7c72;
 
-  --node-bg: #12141c;
+  --node-bg: #fbfaf5;
 }
 
 html {
@@ -107,7 +109,7 @@ body {
   left: 2%;
   width: 720px;
   height: 720px;
-  background: radial-gradient(circle, rgba(124, 116, 255, 0.28), transparent 65%);
+  background: radial-gradient(circle, rgba(86, 70, 212, 0.14), transparent 65%);
   animation: signalDrift1 28s ease-in-out infinite alternate;
 }
 [data-signal-bg] .glow-2 {
@@ -115,7 +117,7 @@ body {
   right: -180px;
   width: 620px;
   height: 620px;
-  background: radial-gradient(circle, rgba(52, 230, 214, 0.16), transparent 65%);
+  background: radial-gradient(circle, rgba(14, 124, 114, 0.1), transparent 65%);
   animation: signalDrift2 34s ease-in-out infinite alternate;
 }
 

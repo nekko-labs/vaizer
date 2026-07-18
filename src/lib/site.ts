@@ -6,9 +6,9 @@
 
 export const site = {
   name: 'Vaizer',
-  tagline: 'See how your agents work.',
+  tagline: 'See, shape, and steer your agents.',
   description:
-    'Vaizer helps you see how your AI agents work and what they are focused on. Break down any skill into a readable workflow, and watch long-running agent loops make their way toward a goal.',
+    'Vaizer is agent and prompt management made visible: break any skill into a readable workflow, analyze and version your prompts, feature-flag prompt config per environment, and run every agent session from one HUD.',
   // Absolute URL used for metadata. Vaizer lives at its own domain.
   // Use `||` (not `??`) so an empty-string env var falls back too.
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://vaizer.app',
@@ -22,5 +22,8 @@ export const site = {
 
 export const nav: ReadonlyArray<{ label: string; href: string }> = [
   { label: 'Skills', href: '/skills' },
+  { label: 'Prompts', href: '/prompts' },
+  { label: 'Config', href: '/config' },
+  { label: 'HUD', href: '/hud' },
   { label: 'Watch', href: '/watch' },
 ];
