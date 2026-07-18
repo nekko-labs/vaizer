@@ -4,10 +4,10 @@ import { ArrowRightIcon } from '@/components/icons';
 import { VaizerMark } from '@/components/Logo';
 
 /**
- * Marketing home. One scroll to grasp the pitch (see how your agents work and
- * what they are focused on) and route into the two features: the skills
- * workflow visualizer and the agent-loop monitor. Two hand-built mini-previews
- * carry the idea before you click through.
+ * Marketing home. One scroll to grasp the pitch (agent and prompt management,
+ * made visible) and route into the features: the skills workflow visualizer,
+ * the prompt workbench, prompt config, the agent HUD, and the loop monitor.
+ * Hand-built mini-previews carry each idea before you click through.
  */
 
 export default function HomePage() {
@@ -19,39 +19,37 @@ export default function HomePage() {
           <Reveal load>
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
               <VaizerMark className="h-4 w-4 text-accent" />
-              Agent observability, made readable
+              Agent &amp; prompt management, made visible
             </span>
           </Reveal>
           <Reveal load delay={0.08}>
             <h1 className="mt-6 text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
-              See how your agents
-              <br />
-              <span className="text-accent">work</span> and what they&apos;re{' '}
-              <span className="text-signal">focused on</span>.
+              <span className="text-accent">See</span>, shape, and{' '}
+              <span className="text-signal">steer</span> your agents.
             </h1>
           </Reveal>
           <Reveal load delay={0.16}>
             <p className="mx-auto mt-6 max-w-xl text-lg font-medium leading-relaxed text-muted lg:mx-0">
-              Agents run skills, branch on decisions, and grind through long
-              loops, mostly out of sight. Vaizer turns that black box into
-              something you can read and watch: the shape of a skill before you
-              run it, and the progress of a loop while it runs.
+              Agents run on skills and prompts, then work mostly out of sight.
+              Vaizer makes the whole loop legible: read a skill before you run
+              it, analyze and version the prompts behind it, control what each
+              environment serves, and watch every session from one HUD.
             </p>
           </Reveal>
           <Reveal load delay={0.24}>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
               <Link
-                href="/skills"
+                href="/prompts"
                 className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 text-base font-semibold text-accent-fg transition-transform hover:-translate-y-0.5"
               >
-                Explore skills
+                Analyze a prompt
                 <ArrowRightIcon className="h-4 w-4" />
               </Link>
               <Link
-                href="/watch"
+                href="/hud"
                 className="inline-flex items-center gap-2 rounded-lg border border-border px-6 py-3 text-base font-medium text-fg transition-colors hover:border-accent"
               >
-                Watch a run
+                Open the HUD
               </Link>
             </div>
           </Reveal>
@@ -62,39 +60,78 @@ export default function HomePage() {
         </Reveal>
       </section>
 
-      {/* What Vaizer sees */}
+      {/* What Vaizer covers */}
       <section className="mt-16">
         <Reveal>
           <h2 className="text-center text-sm font-semibold uppercase tracking-widest text-muted">
-            Two ways to see
+            One place to manage your agents
           </h2>
         </Reveal>
 
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
-          {/* Feature 1: skills visualizer */}
           <Reveal>
             <FeatureCard
               eyebrow="Skills"
               title="Break down any skill into a workflow"
-              body="Skills are Markdown and tools; their real behavior is buried in prose. Vaizer renders any skill as a node graph, trigger to output, so you can read what it does and where it branches before you trust it with your machine. Browse the catalog, or paste a public skill (like Anthropic's official ones) and break it down."
+              body="Skills are Markdown and tools; their real behavior is buried in prose. Vaizer renders any skill as a node graph, trigger to output, so you can read what it does and where it branches before you trust it with your machine. Browse the catalog, or paste any public skill and break it down."
               href="/skills"
               cta="Explore skills"
               preview={<WorkflowPreview />}
             />
           </Reveal>
 
-          {/* Feature 2: watch */}
           <Reveal delay={0.08}>
             <FeatureCard
-              eyebrow="Watch"
-              title="Watch a long loop reach the goal"
-              body="Long autonomous runs are a wall of logs or nothing at all. Vaizer reframes a loop as a journey toward victory: milestones on a path, a marker that advances, attempts that win or fail. Keep it open and answer the only question that matters, is it making progress, at a glance."
-              href="/watch"
-              cta="Watch a run"
-              preview={<TrackPreview />}
+              eyebrow="Prompts"
+              title="Write, version, and analyze your prompts"
+              body="A prompt library with history, plus instant analysis: the weak points and how to fix them, the decisions the prompt quietly hands to the model, what a run costs on each model, and which model should run it, tuned to whether you want the cheapest fit or the highest quality."
+              href="/prompts"
+              cta="Open the workbench"
+              preview={<PromptPreview />}
+            />
+          </Reveal>
+
+          <Reveal>
+            <FeatureCard
+              eyebrow="Config"
+              title="Feature-flag your prompt config"
+              body="The LaunchDarkly workflow, pointed at prompts. Toggle what each environment serves, promote a prompt from development to production without a deploy, and cache or invalidate served prompts on your schedule."
+              href="/config"
+              cta="See prompt config"
+              preview={<ConfigPreview />}
+            />
+          </Reveal>
+
+          <Reveal delay={0.08}>
+            <FeatureCard
+              eyebrow="HUD"
+              title="Run every session from one command center"
+              body="Long overnight loops and quick chats, side by side, with progress and spend per session. Self-running agents stay quiet while they work; the attention queue surfaces the few that actually need a human. For a single long run, the Watch view replays it as a journey toward the goal."
+              href="/hud"
+              cta="Open the HUD"
+              preview={<HudPreview />}
             />
           </Reveal>
         </div>
+
+        {/* Watch banner */}
+        <Reveal className="mt-6">
+          <Link
+            href="/watch"
+            className="group flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-accent sm:flex-row sm:items-center"
+          >
+            <div className="flex-1">
+              <span className="text-xs font-semibold uppercase tracking-widest text-accent">Watch</span>
+              <h3 className="mt-1 text-lg font-semibold tracking-tight">Follow one long run as a journey toward victory</h3>
+              <p className="mt-1 text-sm leading-relaxed text-muted">
+                Milestones on a path, a marker that advances, attempts that win or fail. Is it making progress? One glance.
+              </p>
+            </div>
+            <div className="w-full sm:w-72">
+              <TrackPreview />
+            </div>
+          </Link>
+        </Reveal>
       </section>
 
       {/* How it fits */}
@@ -109,17 +146,17 @@ export default function HomePage() {
             {
               n: '01',
               t: 'Read before you run',
-              d: 'Every skill becomes a graph you can click through, step by step, with plain-English explanations of triggers, tools, decisions, and loops.',
+              d: 'Every skill becomes a graph you can click through, and every prompt gets a review: what it will do, what it leaves to chance, and what it costs.',
             },
             {
               n: '02',
-              t: 'Any public skill',
-              d: 'Point Vaizer at a GitHub URL. It fetches the SKILL.md, parses it, and draws the same workflow, even for skills that are not in our catalog.',
+              t: 'Change without deploying',
+              d: 'Prompts are config, not code. Version them, flag them per environment, and invalidate caches when you say so.',
             },
             {
               n: '03',
               t: 'Watch the momentum',
-              d: 'A run is a goal, a path of milestones, and a stream of attempts. Vaizer shows how far along it is and what it just tried.',
+              d: 'The HUD shows every session and who needs you; Watch replays one long run as a path of milestones and attempts.',
             },
           ].map((item) => (
             <StaggerItem key={item.n}>
@@ -138,24 +175,24 @@ export default function HomePage() {
         <Reveal>
           <VaizerMark className="mx-auto h-12 w-12 text-accent" />
           <h2 className="mx-auto mt-6 max-w-2xl text-3xl font-bold leading-tight sm:text-4xl">
-            Stop guessing what your agent is doing.
+            Stop guessing what your agents are doing.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-base font-medium leading-relaxed text-muted">
-            Start with a skill breakdown, then keep a run in view.
+            Analyze the prompt, flag the config, and keep every session in view.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/skills"
+              href="/prompts"
               className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 text-base font-semibold text-accent-fg transition-transform hover:-translate-y-0.5"
             >
-              Break down a skill
+              Analyze a prompt
               <ArrowRightIcon className="h-4 w-4" />
             </Link>
             <Link
-              href="/watch"
+              href="/hud"
               className="inline-flex items-center gap-2 rounded-lg border border-border px-6 py-3 text-base font-medium text-fg transition-colors hover:border-accent"
             >
-              Watch a run
+              Open the HUD
             </Link>
           </div>
         </Reveal>
@@ -205,13 +242,13 @@ function FeatureCard({
 /** Hero node graph: a compact static version of the workflow canvas. */
 function HeroGraph() {
   const nodes = [
-    { x: 12, y: 70, c: '#f59e0b', label: '/command' },
-    { x: 118, y: 30, c: '#6f9bff', label: 'context' },
-    { x: 118, y: 110, c: '#a78bfa', label: 'agent' },
-    { x: 224, y: 70, c: '#fbbf24', label: 'decide' },
-    { x: 330, y: 30, c: '#4ec98a', label: 'tool' },
-    { x: 330, y: 110, c: '#f472b6', label: 'loop' },
-    { x: 436, y: 70, c: '#34d399', label: 'output' },
+    { x: 12, y: 70, c: '#b45309', label: '/command' },
+    { x: 118, y: 30, c: '#2563eb', label: 'context' },
+    { x: 118, y: 110, c: '#7c3aed', label: 'agent' },
+    { x: 224, y: 70, c: '#a16207', label: 'decide' },
+    { x: 330, y: 30, c: '#0f766e', label: 'tool' },
+    { x: 330, y: 110, c: '#db2777', label: 'loop' },
+    { x: 436, y: 70, c: '#15803d', label: 'output' },
   ];
   const edges: Array<[number, number, boolean]> = [
     [0, 1, false],
@@ -295,11 +332,11 @@ function HeroGraph() {
 /** Compact workflow strip for the Skills feature card. */
 function WorkflowPreview() {
   const steps = [
-    { c: '#f59e0b', label: 'trigger' },
-    { c: '#6f9bff', label: 'context' },
-    { c: '#a78bfa', label: 'reason' },
-    { c: '#4ec98a', label: 'tool' },
-    { c: '#34d399', label: 'output' },
+    { c: '#b45309', label: 'trigger' },
+    { c: '#2563eb', label: 'context' },
+    { c: '#7c3aed', label: 'reason' },
+    { c: '#0f766e', label: 'tool' },
+    { c: '#15803d', label: 'output' },
   ];
   return (
     <div className="flex items-center gap-1.5 overflow-x-auto">
@@ -313,6 +350,82 @@ function WorkflowPreview() {
             <span className="font-mono text-subtle">{s.label}</span>
           </span>
           {i < steps.length - 1 && <span className="text-muted">→</span>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Prompt-analysis strip for the Prompts feature card. */
+function PromptPreview() {
+  return (
+    <div className="flex items-center gap-3">
+      <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl border border-border bg-surface-2">
+        <span className="text-lg font-bold text-accent">B</span>
+        <span className="font-mono text-[9px] text-muted">74/100</span>
+      </div>
+      <div className="min-w-0 flex-1 space-y-1.5">
+        {[
+          ['bg-[#dc2626]', 'Conflicting length instructions'],
+          ['bg-[#b45309]', 'No success criteria'],
+          ['bg-signal', 'Pick: Sonnet 5 · $0.014 per run'],
+        ].map(([dot, label]) => (
+          <div key={label} className="flex items-center gap-2 rounded-lg border border-border bg-surface-2 px-2.5 py-1">
+            <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${dot}`} />
+            <span className="truncate font-mono text-[10px] text-subtle">{label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Flag-toggle strip for the Config feature card. */
+function ConfigPreview() {
+  const rows: Array<[string, boolean, boolean, boolean]> = [
+    ['system-prompt.greeting', true, true, true],
+    ['policy.escalation-v2', true, true, false],
+    ['style.tone-experiment', true, false, true],
+  ];
+  return (
+    <div className="space-y-1.5">
+      <div className="grid grid-cols-[1fr_repeat(3,34px)] items-center gap-1 px-2.5 text-[9px] font-semibold uppercase tracking-wide text-muted">
+        <span>flag</span>
+        <span className="text-center">dev</span>
+        <span className="text-center">stg</span>
+        <span className="text-center">prod</span>
+      </div>
+      {rows.map(([key, ...envs]) => (
+        <div key={key as string} className="grid grid-cols-[1fr_repeat(3,34px)] items-center gap-1 rounded-lg border border-border bg-surface-2 px-2.5 py-1.5">
+          <span className="truncate font-mono text-[10px] text-subtle">{key}</span>
+          {(envs as boolean[]).map((on, i) => (
+            <span key={i} className={`mx-auto h-3 w-6 rounded-full ${on ? 'bg-accent' : 'bg-border'} relative`}>
+              <span className={`absolute top-0.5 h-2 w-2 rounded-full bg-surface ${on ? 'right-0.5' : 'left-0.5'}`} />
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Fleet strip for the HUD feature card. */
+function HudPreview() {
+  const rows: Array<{ name: string; status: string; dot: string; pct: number }> = [
+    { name: 'DB migration loop', status: 'running', dot: 'bg-signal', pct: 64 },
+    { name: 'Dependency audit', status: 'needs you', dot: 'bg-[#dc2626]', pct: 80 },
+    { name: 'Chat: billing spec', status: 'running', dot: 'bg-signal', pct: 55 },
+  ];
+  return (
+    <div className="space-y-1.5">
+      {rows.map((r) => (
+        <div key={r.name} className="flex items-center gap-2 rounded-lg border border-border bg-surface-2 px-2.5 py-1.5">
+          <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${r.dot}`} />
+          <span className="min-w-0 flex-1 truncate font-mono text-[10px] text-subtle">{r.name}</span>
+          <span className="hidden font-mono text-[9px] text-muted sm:block">{r.status}</span>
+          <span className="h-1 w-14 shrink-0 overflow-hidden rounded-full bg-border">
+            <span className="block h-full rounded-full bg-accent" style={{ width: `${r.pct}%` }} />
+          </span>
         </div>
       ))}
     </div>

@@ -15,7 +15,13 @@ export type AnalyticsEvent =
   | 'skill_feedback_submitted'
   | 'skill_inspected'
   | 'watch_run_played'
-  | 'community_link_clicked';
+  | 'community_link_clicked'
+  | 'prompt_created'
+  | 'prompt_version_saved'
+  | 'prompt_preference_changed'
+  | 'config_flag_toggled'
+  | 'config_cache_invalidated'
+  | 'hud_attention_resolved';
 
 export function capture(event: AnalyticsEvent, props?: Record<string, unknown>) {
   try {

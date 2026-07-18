@@ -1,6 +1,6 @@
 ---
 status: draft
-last-updated: 2026-07-15
+last-updated: 2026-07-18
 owner: Philip
 ---
 
@@ -22,15 +22,23 @@ owner: Philip
 ### Architecture
 - Single Next.js app at the domain root (no basePath). Routes:
   - `/`, marketing home
-  - `/skills`, catalog + "break down a skill" entry
+  - `/skills`, search-first catalog + break down any public skill (inline visualization)
   - `/skills/[slug]`, catalog skill detail + workflow visualizer
-  - `/skills/inspect`, break down any public skill (input a GitHub URL / pick a known one)
+  - `/skills/inspect`, redirects to `/skills` (legacy)
+  - `/prompts`, prompt workbench: library + versioning + live analysis
+  - `/config`, dynamic prompt configuration (prompt flags per project/environment, cache + invalidation)
+  - `/hud`, agent command center (fleet board + attention queue, demo feed)
   - `/watch`, agent-loop monitor (demo run + future live runs)
-  - API: `/api/vote`, `/api/feedback`, `/api/skills/[slug]/download`, `/api/inspect` (fetch + parse a public skill)
+  - API: `/api/vote`, `/api/feedback`, `/api/skills/[slug]/download`, `/api/inspect` (fetch + parse a public skill), `/api/anthropic-skills`
 - **Skills data** (`src/data/skills.ts`): typed catalog + the `SkillWorkflow` graph type + a pure `layoutWorkflow` layered-layout function. This is the shared vocabulary the whole app renders skills in.
 - **Skill parsing** (`src/lib/skill-parse.ts`): heuristic `SKILL.md` → `SkillWorkflow` parser (frontmatter + body sections/steps → trigger/context/agent/tool/decision/loop/output nodes). Runs server-side in `/api/inspect`.
 - **Watch run model** (`src/data/runs.ts`): a `Run` = goal + ordered milestones + a stream of attempts + status. A demo run drives the UI; the same shape can be fed by a real run feed later.
 - The workflow visualizer (`SkillWorkflow.tsx`) is source-agnostic: it renders any `SkillWorkflow`, whether from the catalog or a parsed public skill.
+- **Model catalog** (`src/data/models.ts`): typed Claude family data (pricing per MTok, context, quality/speed ratings, planning traits). The one place model facts live.
+- **Prompt analysis** (`src/lib/prompt-analysis.ts`): pure, deterministic analyzer. Classifies the task (type + complexity), reviews the prompt (issues w/ fixes, strengths, score), extracts the decision points it delegates, estimates tokens/cost per model, generates per-model plan paths from `models.ts` planning traits, and scores a recommendation by preference (cheapest / balanced / quality). No API calls; runs client-side.
+- **Prompt store** (`src/lib/prompt-store.ts`): localStorage CRUD + immutable version snapshots, seeded on first load. Designed to swap to Supabase without changing the workbench.
+- **Prompt config** (`src/data/prompt-config.ts`): Project → PromptFlag → per-environment `{enabled, cache}` state, localStorage-persisted demo data. `ConfigBoard.tsx` owns the toggle/invalidate/re-cache workflow (invalidate marks stale; a simulated next request re-caches).
+- **HUD session model** (`src/data/agents.ts`): `AgentSession` (kind, status incl. needs-attention, progress, last event, spend) + a demo fleet and scripted events; `AgentHud.tsx` ticks it client-side. Same demo-first pattern as Watch, ready for a real session feed.
 
 ### Conventions
 - Server Components by default; `'use client'` only for interactive islands (visualizer, explorer, vote/feedback, watch player).
@@ -38,12 +46,13 @@ owner: Philip
 - File-header comments explain *why* a module exists, matching the ported Dojo style.
 - **No em dashes** anywhere (per workspace writing rule).
 
-### Design system: "Signal" (dark node-graph)
-- A single dark theme. Deep slate canvas, subtle dot-grid echoing the node canvas, one electric accent.
-- Tokens in `globals.css` (`--bg`, `--surface`, `--surface-2`, `--fg`, `--muted`, `--subtle`, `--border`, `--accent`, ...); everything re-skins from there.
-- Palette: near-black slate background, violet-indigo primary accent, cyan secondary "signal" for focus/progress. Node-kind colors (trigger amber, context blue, agent violet, tool green, decision yellow, loop pink, output green) carry over from Dojo so the graph reads the same.
+### Design system: "Vellum" (light node-graph)
+- A single light theme, but never plain white: warm bone/vellum canvas with the subtle dot-grid echoing the node canvas. Reads like a technical drawing on paper. (Replaced the original dark "Signal" theme on 2026-07-18.)
+- Tokens in `globals.css` (`--bg: #ece9e1`, `--surface`, `--surface-2`, `--fg` near-black ink, `--muted`, `--subtle`, `--border`, `--accent`, ...); everything re-skins from there.
+- Palette: indigo-ink primary accent (`#5646d4`), deep-teal secondary "signal" (`#0e7c72`) for focus/progress/success. Node-kind hues carry over from Dojo (trigger amber, context blue, agent violet, tool teal-green, decision yellow, loop pink, output green) but in 600/700-weight values tuned for the light canvas.
+- Status colors on light: red `#dc2626` (fail/needs-attention), amber `#b45309` (partial/stale/waiting), signal teal for ok/success.
 - Type: crisp sans (Inter) + mono (JetBrains Mono).
-- Motion is quiet and once-only, except the Watch view (purposeful ongoing motion); `prefers-reduced-motion` respected.
+- Motion is quiet and once-only, except the Watch view and the HUD (purposeful ongoing motion); `prefers-reduced-motion` respected.
 
 ### Provenance
 - Forked from `nekko-dojo` (Next 15 app). The Skills subsystem (catalog, visualizer, install/download/vote/feedback, Supabase schema) moved here wholesale; Dojo's learning content (articles, guide, community) was stripped. Dojo's `/skills` was removed and Vaizer is now linked from Dojo's Community projects and the Nekko Labs Apps page.
@@ -59,12 +68,21 @@ owner: Philip
 
 ### Backlog
 - [ ] Deepen the public-skill parser: read `allowed-tools`/`tools` frontmatter and multi-file skills into richer graphs, added 2026-07-15 · [Skills, break down any public skill](SPEC.md)
-- [ ] Watch: define + implement the real run feed (SSE endpoint or uploaded run JSON), then a Claude Code / agent-SDK hook that emits it, added 2026-07-15 · [Watch](SPEC.md)
+- [ ] One real session/run feed powering both the HUD and Watch (SSE endpoint or uploaded run JSON), then a Claude Code / agent-SDK hook that emits it, added 2026-07-15 (widened to the HUD 2026-07-18) · [Watch](SPEC.md), [HUD](SPEC.md)
+- [ ] Prompts: server-side storage + sharing (Supabase; reuse the vote/feedback env), added 2026-07-18 · [Prompts](SPEC.md)
+- [ ] Prompts: optional LLM-backed deep review on top of the heuristic analyzer, added 2026-07-18 · [Prompts](SPEC.md)
+- [ ] Config: real backing store + serve API so agents can actually read flags, and link flags to workbench prompts, added 2026-07-18 · [Config](SPEC.md)
 - [ ] Generate the catalog `skills.ts` from the marketplace `catalog.json` instead of hand-maintaining, added 2026-07-15
 - [ ] Shareable permalink for a parsed public-skill breakdown, added 2026-07-15
-- [ ] Final logo / wordmark + OG image pass, added 2026-07-15
+- [ ] Final logo / wordmark + OG image pass (now on the Vellum palette), added 2026-07-15
 
 ### Shipped
+- [x] Retheme to "Vellum": light warm-bone canvas, indigo-ink accent, deep-teal signal, node-kind + status colors retuned for light; `color-scheme: light`, added+done 2026-07-18 · [Cross-cutting](SPEC.md)
+- [x] Prompt workbench at `/prompts`: localStorage library w/ seeds, autosave editing, immutable version snapshots + restore (`src/lib/prompt-store.ts`, `PromptWorkbench.tsx`), added+done 2026-07-18 · [Prompts](SPEC.md)
+- [x] Prompt analysis (`src/lib/prompt-analysis.ts` + `src/data/models.ts`): live review (grade, issues w/ fixes, strengths), delegated-decision extraction, per-model cost estimates, preference-weighted model recommendation (cheapest/balanced/quality), side-by-side per-model plan paths, added+done 2026-07-18 · [Prompts](SPEC.md)
+- [x] Dynamic prompt config at `/config`: LaunchDarkly-style projects → flags → per-env toggles, prompt cache states (cached/stale/uncached) with single + bulk invalidation and simulated re-cache, flag detail w/ served prompt + targeting (`src/data/prompt-config.ts`, `ConfigBoard.tsx`), added+done 2026-07-18 · [Config](SPEC.md)
+- [x] Agent HUD at `/hud`: fleet board (loops/jobs/chats) w/ status, progress, spend; attention queue w/ resolve-and-resume; summary stats; filters; live demo ticker (`src/data/agents.ts`, `AgentHud.tsx`), added+done 2026-07-18 · [HUD](SPEC.md)
+- [x] Reposition home + nav for agent & prompt management: new hero/copy, 4-card feature grid + Watch banner, new mini previews, nav Skills/Prompts/Config/HUD/Watch, header CTA "Open the HUD", new tagline/description in `site.ts`, added+done 2026-07-18 · [Marketing home](SPEC.md)
 - [x] Scaffold vaizer from nekko-dojo; strip Dojo content (articles, guide, community, MDX content); keep the Skills subsystem, added 2026-07-15 · [Provenance](TASKS.md)
 - [x] Rebrand to the "Signal" dark node-graph theme: `globals.css` tokens, Inter + JetBrains Mono, layout, site config, header/footer/mobile nav, added 2026-07-15 · [Cross-cutting](SPEC.md)
 - [x] Marketing home: hero + two feature sections (skills visualizer, agent-loop monitor) with live mini-previews + closing CTA, added 2026-07-15 · [Marketing home](SPEC.md)

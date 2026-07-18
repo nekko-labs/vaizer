@@ -14,8 +14,8 @@ import { capture } from '@/lib/analytics';
 
 const STATUS: Record<AttemptStatus, { glyph: string; color: string; label: string }> = {
   success: { glyph: '✓', color: 'var(--signal)', label: 'worked' },
-  fail: { glyph: '✕', color: '#f87171', label: 'failed' },
-  partial: { glyph: '◐', color: '#fbbf24', label: 'partial' },
+  fail: { glyph: '✕', color: '#dc2626', label: 'failed' },
+  partial: { glyph: '◐', color: '#b45309', label: 'partial' },
   running: { glyph: '●', color: 'var(--accent)', label: 'running' },
 };
 
