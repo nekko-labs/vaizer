@@ -1,6 +1,6 @@
 ---
 status: draft
-last-updated: 2026-07-18
+last-updated: 2026-07-19
 owner: Philip
 ---
 
@@ -29,7 +29,7 @@ owner: Philip
   - `/config`, dynamic prompt configuration (prompt flags per project/environment, cache + invalidation)
   - `/hud`, agent command center (fleet board + attention queue, demo feed)
   - `/watch`, agent-loop monitor (demo run + future live runs)
-  - API: `/api/vote`, `/api/feedback`, `/api/skills/[slug]/download`, `/api/inspect` (fetch + parse a public skill), `/api/anthropic-skills`
+  - API: `/api/vote`, `/api/feedback`, `/api/skills/[slug]/download`, `/api/inspect` (fetch + parse a public skill), `/api/anthropic-skills`, `/api/skills` (planned: public JSON catalog for external consumers, first consumer Nekko Dojo)
 - **Skills data** (`src/data/skills.ts`): typed catalog + the `SkillWorkflow` graph type + a pure `layoutWorkflow` layered-layout function. This is the shared vocabulary the whole app renders skills in.
 - **Skill parsing** (`src/lib/skill-parse.ts`): heuristic `SKILL.md` → `SkillWorkflow` parser (frontmatter + body sections/steps → trigger/context/agent/tool/decision/loop/output nodes). Runs server-side in `/api/inspect`.
 - **Watch run model** (`src/data/runs.ts`): a `Run` = goal + ordered milestones + a stream of attempts + status. A demo run drives the UI; the same shape can be fed by a real run feed later.
@@ -65,6 +65,9 @@ owner: Philip
 - [ ] Connect Vercel project (nekkolabs team) + set `NEXT_PUBLIC_SITE_URL=https://vaizer.app`, added 2026-07-15
 - [ ] Point vaizer.app DNS at Vercel (Philip, later), added 2026-07-15
 - [ ] Set Supabase + PostHog env on Vercel to light up votes/feedback/analytics, added 2026-07-15
+- [ ] Public catalog API `/api/skills`: JSON list of the catalog (name, slug, description, trust tier, categories, absolute link to the skill page), CORS-readable and cached, so Nekko Dojo's Community "Helpful tools" section can render it without hand-maintaining a list, added 2026-07-19 · [Skills, search-first workflow visualizer](SPEC.md)
+- [ ] Author the **Resume Checker** skill and save it to the marketplace (`nekko-labs/nekko-dojo-skills`), then list it in the catalog as Nekko-official. Behavior: takes a resume + optional job links; auto-detects the role type and evaluates against role-appropriate criteria; checks current ATS / automated-screening signals and AI-centric JD expectations; outputs an HTML results page (findings, resume feedback, success likelihood per provided job link); interactive fix loop where the user accepts all or some suggested changes; emits the updated resume and highlights exactly what changed (e.g. a screenshot with an overlay of the edits), added 2026-07-19 · [Skills, Resume Checker](SPEC.md)
+- [ ] Add the third-party **impeccable** skill to the catalog with clear attribution (not a Nekko Labs skill; distinct trust tier, link to the author's repo), added 2026-07-19 · [Skills, search-first workflow visualizer](SPEC.md)
 
 ### Backlog
 - [ ] Deepen the public-skill parser: read `allowed-tools`/`tools` frontmatter and multi-file skills into richer graphs, added 2026-07-15 · [Skills, break down any public skill](SPEC.md)

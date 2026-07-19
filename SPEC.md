@@ -1,6 +1,6 @@
 ---
 status: draft
-last-updated: 2026-07-18
+last-updated: 2026-07-19
 owner: Philip
 ---
 
@@ -84,6 +84,18 @@ One search box is the whole entry point to the Skills page. You search across ou
 - Live Anthropic index: `/api/anthropic-skills` reads the `anthropics/skills` repo tree + frontmatter server-side (cached 1h, no token, env-optional), deduped against catalog entries `[shipped]`
 - Per-skill detail page (deep link / SEO) with the same graph, trust tiers, install commands, per-skill `.zip` download, community upvotes + feedback (Supabase-backed) `[shipped]`
 - Marketplace install flow from `nekko-labs/nekko-dojo-skills`, shown inline for installable catalog skills `[shipped]`
+- **Public catalog API:** a JSON endpoint exposing the skills catalog (name, slug, description, trust tier, categories, link) so other properties can embed the list without hand-maintaining it. First consumer: Nekko Dojo's Community "Helpful tools" section. `[planned]`
+- **Third-party skills in the catalog:** skills not authored by Nekko Labs, listed with clear attribution to their real author and a distinct trust tier. First entry: **impeccable**. `[planned]`
+
+### Skills: Resume Checker (Nekko-official skill)
+A job-hunt skill authored by Nekko Labs, published to the marketplace (`nekko-labs/nekko-dojo-skills`) and listed in the catalog like any other skill. It checks a resume against what current automated candidate-analysis (ATS) tools screen for and against what new AI-centric role job descriptions ask for. *Why:* Dojo's audience is actively applying for jobs, and resume screening is now largely automated; a skill that evaluates against the actual screeners (and the new AI-role expectations) is concrete, differentiated value, and it seeds the catalog with a flagship Nekko-official skill. `[planned]`
+
+- Input: a resume, plus optionally links to specific jobs the user wants to apply to `[planned]`
+- Auto-detects the role type from the resume and any provided jobs, and evaluates against role-appropriate criteria (an AI-engineering resume is judged differently from a frontend one) `[planned]`
+- Checks cover current ATS / automated-screening signals (keywords, structure, parseability, quantified impact) and the expectations showing up in AI-centric job descriptions `[planned]`
+- Output: an HTML results page with the findings, concrete resume feedback, and, when a job link was provided, a success-likelihood estimate against that posting `[planned]`
+- Interactive fix loop: the skill proposes changes and the user accepts all or only some of them `[planned]`
+- Produces the updated resume and highlights exactly what changed, e.g. a rendered screenshot of the resume with an overlay marking the edits `[planned]`
 
 ### Skills: break down any public skill (folded into search)
 Point Vaizer at *any* public skill and get the same workflow breakdown, even if it isn't in our catalog. This is no longer a separate page: it is the URL-paste path of the unified search (the old `/skills/inspect` route redirects to `/skills`). *Why:* the visualizer is only as useful as the set of skills it can read; opening it to all public skills (e.g. Anthropic's official ones) makes it a general tool.
@@ -160,3 +172,5 @@ This project is NOT:
 - Prompts, config, and the HUD all persist to localStorage in v1; the order for moving them server-side (Supabase for prompts first?) is open.
 - Watch and the HUD currently play demo data; the shape of the real session/run feed (SSE endpoint? uploaded JSON? a small SDK hook?) is still open, and ideally one feed powers both.
 - Brand: v1.1 ships the "Vellum" light node-graph theme; a final logo/wordmark pass is pending.
+- The public catalog API's exact shape (and whether it merges the live Anthropic index or serves only our catalog) is open; Nekko Dojo's Helpful tools section is the first consumer, so its needs set the v1 shape.
+- The Resume Checker's success-likelihood estimate against a job link needs an honest framing (it is an estimate from screening signals, not a promise); how strongly to caveat it is open.
