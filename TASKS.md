@@ -29,7 +29,7 @@ owner: Philip
   - `/config`, dynamic prompt configuration (prompt flags per project/environment, cache + invalidation)
   - `/hud`, agent command center (fleet board + attention queue, demo feed)
   - `/watch`, agent-loop monitor (demo run + future live runs)
-  - API: `/api/vote`, `/api/feedback`, `/api/skills/[slug]/download`, `/api/inspect` (fetch + parse a public skill), `/api/anthropic-skills`, `/api/skills` (planned: public JSON catalog for external consumers, first consumer Nekko Dojo)
+  - API: `/api/vote`, `/api/feedback`, `/api/skills/[slug]/download`, `/api/inspect` (fetch + parse a public skill), `/api/anthropic-skills`, `/api/skills` (public JSON catalog for external consumers; first consumer is Nekko Dojo's Helpful tools section)
 - **Skills data** (`src/data/skills.ts`): typed catalog + the `SkillWorkflow` graph type + a pure `layoutWorkflow` layered-layout function. This is the shared vocabulary the whole app renders skills in.
 - **Skill parsing** (`src/lib/skill-parse.ts`): heuristic `SKILL.md` → `SkillWorkflow` parser (frontmatter + body sections/steps → trigger/context/agent/tool/decision/loop/output nodes). Runs server-side in `/api/inspect`.
 - **Watch run model** (`src/data/runs.ts`): a `Run` = goal + ordered milestones + a stream of attempts + status. A demo run drives the UI; the same shape can be fed by a real run feed later.
