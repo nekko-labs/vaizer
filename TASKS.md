@@ -65,9 +65,6 @@ owner: Philip
 - [ ] Connect Vercel project (nekkolabs team) + set `NEXT_PUBLIC_SITE_URL=https://vaizer.app`, added 2026-07-15
 - [ ] Point vaizer.app DNS at Vercel (Philip, later), added 2026-07-15
 - [ ] Set Supabase + PostHog env on Vercel to light up votes/feedback/analytics, added 2026-07-15
-- [ ] Public catalog API `/api/skills`: JSON list of the catalog (name, slug, description, trust tier, categories, absolute link to the skill page), CORS-readable and cached, so Nekko Dojo's Community "Helpful tools" section can render it without hand-maintaining a list, added 2026-07-19 · [Skills, search-first workflow visualizer](SPEC.md)
-- [ ] Author the **Resume Checker** skill and save it to the marketplace (`nekko-labs/nekko-dojo-skills`), then list it in the catalog as Nekko-official. Behavior: takes a resume + optional job links; auto-detects the role type and evaluates against role-appropriate criteria; checks current ATS / automated-screening signals and AI-centric JD expectations; outputs an HTML results page (findings, resume feedback, success likelihood per provided job link); interactive fix loop where the user accepts all or some suggested changes; emits the updated resume and highlights exactly what changed (e.g. a screenshot with an overlay of the edits), added 2026-07-19 · [Skills, Resume Checker](SPEC.md)
-- [ ] Add the third-party **impeccable** skill to the catalog with clear attribution (not a Nekko Labs skill; distinct trust tier, link to the author's repo), added 2026-07-19 · [Skills, search-first workflow visualizer](SPEC.md)
 
 ### Backlog
 - [ ] Deepen the public-skill parser: read `allowed-tools`/`tools` frontmatter and multi-file skills into richer graphs, added 2026-07-15 · [Skills, break down any public skill](SPEC.md)
@@ -80,6 +77,9 @@ owner: Philip
 - [ ] Final logo / wordmark + OG image pass (now on the Vellum palette), added 2026-07-15
 
 ### Shipped
+- [x] Public catalog API `/api/skills` (`src/app/api/skills/route.ts`): flat JSON view of the catalog (slug, name, description, category + label, tier + label, author, absolute skill-page URL, sourceUrl, installCommand), CORS-open GET + OPTIONS, cached 1h with stale-while-revalidate; first consumer is Nekko Dojo's Helpful tools section, added+done 2026-07-19 · [Skills, search-first workflow visualizer](SPEC.md)
+- [x] Resume Checker skill: authored in `nekko-labs/nekko-dojo-skills` (`plugins/resume-checker`, SKILL.md + ATS-signals and AI-role-signals references; five stages incl. role auto-detect, HTML report w/ per-job success likelihood, interactive accept-all-or-some fix loop, change highlights) and listed in the Vaizer catalog as Nekko-official + featured with a workflow graph and new `career` category, added+done 2026-07-19 · [Skills, Resume Checker](SPEC.md)
+- [x] Impeccable (by Paul Bakaus, `pbakaus/impeccable`) added to the catalog as a curated third-party skill: attributed author, link-only (no install command in our channel), workflow graph, description states it is not a Nekko Labs skill, added+done 2026-07-19 · [Skills, search-first workflow visualizer](SPEC.md)
 - [x] Retheme to "Vellum": light warm-bone canvas, indigo-ink accent, deep-teal signal, node-kind + status colors retuned for light; `color-scheme: light`, added+done 2026-07-18 · [Cross-cutting](SPEC.md)
 - [x] Prompt workbench at `/prompts`: localStorage library w/ seeds, autosave editing, immutable version snapshots + restore (`src/lib/prompt-store.ts`, `PromptWorkbench.tsx`), added+done 2026-07-18 · [Prompts](SPEC.md)
 - [x] Prompt analysis (`src/lib/prompt-analysis.ts` + `src/data/models.ts`): live review (grade, issues w/ fixes, strengths), delegated-decision extraction, per-model cost estimates, preference-weighted model recommendation (cheapest/balanced/quality), side-by-side per-model plan paths, added+done 2026-07-18 · [Prompts](SPEC.md)

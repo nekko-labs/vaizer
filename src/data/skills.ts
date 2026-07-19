@@ -26,7 +26,8 @@ export type SkillCategory =
   | 'data'
   | 'design'
   | 'productivity'
-  | 'devops';
+  | 'devops'
+  | 'career';
 
 /**
  * A skill's workflow graph — the steps it runs through (trigger → context →
@@ -129,6 +130,7 @@ export const categoryLabels: Record<SkillCategory, string> = {
   design: 'Design',
   productivity: 'Productivity',
   devops: 'DevOps',
+  career: 'Career',
 };
 
 export const skills: Skill[] = [
@@ -217,7 +219,87 @@ export const skills: Skill[] = [
       ],
     ),
   },
+  {
+    id: 'resume-checker',
+    name: 'Resume Checker',
+    slug: 'resume-checker',
+    description:
+      'Check a resume against automated candidate-screening (ATS) signals and AI-centric job expectations, score it against specific job postings, then interactively apply fixes and see exactly what changed.',
+    longDescription:
+      'A five-stage resume review built for how screening actually works now. Give it a resume (and optionally links to jobs you want to apply to): it auto-detects the role type (family, seniority, how AI-centric the target is) and evaluates accordingly, checking automated-screening signals (parseability, section structure, keyword and requirement matching, quantified impact) alongside the expectations showing up in AI-era job descriptions. The output is a self-contained HTML report with findings, concrete suggested changes, and, per job link, an honest success-likelihood estimate for surviving the automated screen. Then it gets interactive: pick all or some of the suggestions, and it applies them to a copy of your resume and highlights exactly what changed.',
+    category: 'career',
+    tags: ['resume', 'cv', 'ats', 'job-hunt', 'career', 'screening', 'ai-roles'],
+    source: 'nekko-official',
+    author: 'Nekko Labs',
+    sourceUrl:
+      'https://github.com/nekko-labs/nekko-dojo-skills/tree/main/plugins/resume-checker',
+    installCommand: '/plugin install resume-checker@nekko-dojo-skills',
+    beginnerFriendly: true,
+    featured: true,
+    workflow: wf(
+      [
+        { id: 't', kind: 'trigger', label: '/resume-checker', detail: 'Resume + optional job links' },
+        { id: 'ctx', kind: 'context', label: 'Load resume + jobs', detail: 'Fetch each posting' },
+        { id: 'role', kind: 'agent', label: 'Detect role type', detail: 'Family, seniority, AI-centricity' },
+        { id: 'eval', kind: 'agent', label: 'Evaluate resume', detail: 'ATS + AI-era lenses' },
+        { id: 'match', kind: 'agent', label: 'Score vs jobs', detail: 'Keyword gaps + likelihood' },
+        { id: 'rep', kind: 'tool', label: 'Write HTML report', detail: 'Findings + suggestions S1...' },
+        { id: 'dec', kind: 'decision', label: 'Apply which fixes?' },
+        { id: 'fix', kind: 'tool', label: 'Apply chosen edits', detail: 'To a copy, never the original' },
+        { id: 'out', kind: 'output', label: 'Updated resume + change highlights' },
+      ],
+      [
+        { from: 't', to: 'ctx' },
+        { from: 'ctx', to: 'role' },
+        { from: 'role', to: 'eval' },
+        { from: 'eval', to: 'match' },
+        { from: 'match', to: 'rep' },
+        { from: 'rep', to: 'dec' },
+        { from: 'dec', to: 'fix', label: 'all / some' },
+        { from: 'dec', to: 'out', label: 'keep as-is' },
+        { from: 'fix', to: 'eval', label: 're-score', back: true },
+        { from: 'fix', to: 'out' },
+      ],
+    ),
+  },
   // --- Curated external skills (link-only, attributed) ---
+  {
+    id: 'impeccable',
+    name: 'Impeccable',
+    slug: 'impeccable',
+    description:
+      'Paul Bakaus’s design language for AI harnesses: a shared vocabulary (polish, audit, critique, distill...) plus 46 deterministic detector rules that keep your agent’s UI work from sliding into slop. Not a Nekko Labs skill.',
+    longDescription:
+      'Impeccable, by Paul Bakaus (creator of jQuery UI), gives your coding agent a real design vocabulary. `/impeccable init` captures your product’s audience, brand lane, voice, colors, and components into PRODUCT.md and DESIGN.md; commands like polish, audit, critique, bolder, and quieter then act with that context. Under the hood it pairs 46 deterministic detector rules with LLM-only critique checks, and its installer wires a hook that reviews direct UI file edits as your agent works. Third-party and MIT-licensed: this is a curated listing with attribution, not a Nekko Labs skill; install it from its own repo.',
+    category: 'design',
+    tags: ['design', 'ui', 'frontend', 'polish', 'critique', 'third-party'],
+    source: 'curated',
+    author: 'Paul Bakaus',
+    sourceUrl: 'https://github.com/pbakaus/impeccable',
+    featured: true,
+    workflow: wf(
+      [
+        { id: 't', kind: 'trigger', label: '/impeccable', detail: 'polish / audit / critique ...' },
+        { id: 'ctx', kind: 'context', label: 'Load design context', detail: 'PRODUCT.md + DESIGN.md' },
+        { id: 'det', kind: 'tool', label: 'Run detectors', detail: '46 deterministic rules' },
+        { id: 'crit', kind: 'agent', label: 'LLM critique', detail: 'Taste checks rules can’t catch' },
+        { id: 'dec', kind: 'decision', label: 'Findings?' },
+        { id: 'fix', kind: 'tool', label: 'Apply fixes', detail: 'Edit the UI files' },
+        { id: 'out', kind: 'output', label: 'Polished UI + report' },
+      ],
+      [
+        { from: 't', to: 'ctx' },
+        { from: 'ctx', to: 'det' },
+        { from: 'ctx', to: 'crit' },
+        { from: 'det', to: 'dec' },
+        { from: 'crit', to: 'dec' },
+        { from: 'dec', to: 'fix', label: 'yes' },
+        { from: 'dec', to: 'out', label: 'clean' },
+        { from: 'fix', to: 'det', label: 're-check', back: true },
+        { from: 'fix', to: 'out' },
+      ],
+    ),
+  },
   {
     id: 'anthropic-skill-creator',
     name: 'Skill Creator',

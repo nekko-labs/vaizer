@@ -84,18 +84,18 @@ One search box is the whole entry point to the Skills page. You search across ou
 - Live Anthropic index: `/api/anthropic-skills` reads the `anthropics/skills` repo tree + frontmatter server-side (cached 1h, no token, env-optional), deduped against catalog entries `[shipped]`
 - Per-skill detail page (deep link / SEO) with the same graph, trust tiers, install commands, per-skill `.zip` download, community upvotes + feedback (Supabase-backed) `[shipped]`
 - Marketplace install flow from `nekko-labs/nekko-dojo-skills`, shown inline for installable catalog skills `[shipped]`
-- **Public catalog API:** a JSON endpoint exposing the skills catalog (name, slug, description, trust tier, categories, link) so other properties can embed the list without hand-maintaining it. First consumer: Nekko Dojo's Community "Helpful tools" section. `[planned]`
-- **Third-party skills in the catalog:** skills not authored by Nekko Labs, listed with clear attribution to their real author and a distinct trust tier. First entry: **impeccable**. `[planned]`
+- **Public catalog API:** a JSON endpoint exposing the skills catalog (name, slug, description, trust tier, categories, link) so other properties can embed the list without hand-maintaining it. First consumer: Nekko Dojo's Community "Helpful tools" section. Served at `/api/skills` (CORS-open, cached 1h). `[shipped]`
+- **Third-party skills in the catalog:** skills not authored by Nekko Labs, listed with clear attribution to their real author and a distinct trust tier. First entry: **impeccable** by Paul Bakaus, listed as curated with attribution and a link to its repo. `[shipped]`
 
 ### Skills: Resume Checker (Nekko-official skill)
-A job-hunt skill authored by Nekko Labs, published to the marketplace (`nekko-labs/nekko-dojo-skills`) and listed in the catalog like any other skill. It checks a resume against what current automated candidate-analysis (ATS) tools screen for and against what new AI-centric role job descriptions ask for. *Why:* Dojo's audience is actively applying for jobs, and resume screening is now largely automated; a skill that evaluates against the actual screeners (and the new AI-role expectations) is concrete, differentiated value, and it seeds the catalog with a flagship Nekko-official skill. `[planned]`
+A job-hunt skill authored by Nekko Labs, published to the marketplace (`nekko-labs/nekko-dojo-skills`) and listed in the catalog like any other skill. It checks a resume against what current automated candidate-analysis (ATS) tools screen for and against what new AI-centric role job descriptions ask for. *Why:* Dojo's audience is actively applying for jobs, and resume screening is now largely automated; a skill that evaluates against the actual screeners (and the new AI-role expectations) is concrete, differentiated value, and it seeds the catalog with a flagship Nekko-official skill. `[shipped]`
 
-- Input: a resume, plus optionally links to specific jobs the user wants to apply to `[planned]`
-- Auto-detects the role type from the resume and any provided jobs, and evaluates against role-appropriate criteria (an AI-engineering resume is judged differently from a frontend one) `[planned]`
-- Checks cover current ATS / automated-screening signals (keywords, structure, parseability, quantified impact) and the expectations showing up in AI-centric job descriptions `[planned]`
-- Output: an HTML results page with the findings, concrete resume feedback, and, when a job link was provided, a success-likelihood estimate against that posting `[planned]`
-- Interactive fix loop: the skill proposes changes and the user accepts all or only some of them `[planned]`
-- Produces the updated resume and highlights exactly what changed, e.g. a rendered screenshot of the resume with an overlay marking the edits `[planned]`
+- Input: a resume, plus optionally links to specific jobs the user wants to apply to `[shipped]`
+- Auto-detects the role type from the resume and any provided jobs, and evaluates against role-appropriate criteria (an AI-engineering resume is judged differently from a frontend one) `[shipped]`
+- Checks cover current ATS / automated-screening signals (keywords, structure, parseability, quantified impact) and the expectations showing up in AI-centric job descriptions `[shipped]`
+- Output: an HTML results page with the findings, concrete resume feedback, and, when a job link was provided, a success-likelihood estimate against that posting `[shipped]`
+- Interactive fix loop: the skill proposes changes and the user accepts all or only some of them `[shipped]`
+- Produces the updated resume and highlights exactly what changed, e.g. a rendered screenshot of the resume with an overlay marking the edits `[shipped]`
 
 ### Skills: break down any public skill (folded into search)
 Point Vaizer at *any* public skill and get the same workflow breakdown, even if it isn't in our catalog. This is no longer a separate page: it is the URL-paste path of the unified search (the old `/skills/inspect` route redirects to `/skills`). *Why:* the visualizer is only as useful as the set of skills it can read; opening it to all public skills (e.g. Anthropic's official ones) makes it a general tool.
@@ -104,7 +104,7 @@ Point Vaizer at *any* public skill and get the same workflow breakdown, even if 
 - Server-side fetch of the skill's `SKILL.md` (`/api/inspect`) + parse of frontmatter (name, description, tools) and body into a workflow graph via a heuristic step parser `[shipped]`
 - Render the parsed skill through the same visualizer + step explainer, inline on the search page `[shipped]`
 - Graceful handling of unreachable / unparseable sources `[shipped]`
-- Deeper parse (multi-file skills, sub-skills) `[planned]`
+- Deeper parse (multi-file skills, sub-skills) `[shipped]`
 
 ### Prompts: workbench (storage, versioning, analysis)
 Write, store, and analyze prompts in one place at `/prompts`. *Why:* prompts drive everything agents do, but they get written in whatever text box is nearest and judged only after the run; the workbench makes them reviewable assets.
