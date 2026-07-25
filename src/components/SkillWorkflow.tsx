@@ -18,13 +18,13 @@ import {
 
 /** Per-node-kind visual identity for the canvas. */
 const KIND: Record<SkillNodeKind, { color: string; glyph: string; label: string }> = {
-  trigger: { color: '#f59e0b', glyph: '⚡', label: 'Trigger' },
-  context: { color: '#6f9bff', glyph: '▤', label: 'Context' },
-  agent: { color: '#a78bfa', glyph: '✦', label: 'Agent' },
-  tool: { color: '#4ec98a', glyph: '⚙', label: 'Tool' },
-  decision: { color: '#fbbf24', glyph: '◆', label: 'Decision' },
-  loop: { color: '#f472b6', glyph: '↻', label: 'Loop' },
-  output: { color: '#34d399', glyph: '✓', label: 'Output' },
+  trigger: { color: 'var(--node-trigger)', glyph: '⚡', label: 'Trigger' },
+  context: { color: 'var(--node-context)', glyph: '▤', label: 'Context' },
+  agent: { color: 'var(--node-agent)', glyph: '✦', label: 'Agent' },
+  tool: { color: 'var(--node-tool)', glyph: '⚙', label: 'Tool' },
+  decision: { color: 'var(--node-decision)', glyph: '◆', label: 'Decision' },
+  loop: { color: 'var(--node-loop)', glyph: '↻', label: 'Loop' },
+  output: { color: 'var(--node-output)', glyph: '✓', label: 'Output' },
 };
 
 /** What each node kind means; teaching copy for the explainer panel. */

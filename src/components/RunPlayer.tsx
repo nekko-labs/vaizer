@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { type Run, type AttemptStatus, progressAt } from '@/data/runs';
 import { capture } from '@/lib/analytics';
+import { Panel } from './console/Panel';
 
 /**
  * The Watch player: replays a run as a journey toward victory. A path of
@@ -14,8 +15,8 @@ import { capture } from '@/lib/analytics';
 
 const STATUS: Record<AttemptStatus, { glyph: string; color: string; label: string }> = {
   success: { glyph: '✓', color: 'var(--signal)', label: 'worked' },
-  fail: { glyph: '✕', color: '#f87171', label: 'failed' },
-  partial: { glyph: '◐', color: '#fbbf24', label: 'partial' },
+  fail: { glyph: '✕', color: 'var(--danger)', label: 'failed' },
+  partial: { glyph: '◐', color: 'var(--warn)', label: 'partial' },
   running: { glyph: '●', color: 'var(--accent)', label: 'running' },
 };
 
@@ -62,7 +63,7 @@ export function RunPlayer({ run }: { run: Run }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-surface">
+    <Panel padding="none" className="overflow-hidden">
       {/* Goal header */}
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border p-5">
         <div>
@@ -74,7 +75,7 @@ export function RunPlayer({ run }: { run: Run }) {
             won
               ? 'bg-signal/20 text-signal'
               : done
-                ? 'bg-red-500/15 text-red-300'
+                ? 'bg-danger/15 text-danger-fg'
                 : 'bg-accent/15 text-accent'
           }`}
         >
@@ -215,6 +216,6 @@ export function RunPlayer({ run }: { run: Run }) {
             })}
         </ol>
       </div>
-    </div>
+    </Panel>
   );
 }

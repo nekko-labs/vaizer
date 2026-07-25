@@ -36,10 +36,10 @@ export function SiteHeader() {
             <GitHubIcon className="h-5 w-5" />
           </a>
           <Link
-            href="/watch"
+            href="/hud"
             className="ml-1 inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-transform hover:-translate-y-0.5"
           >
-            Watch a run
+            Open the HUD
           </Link>
         </nav>
 
