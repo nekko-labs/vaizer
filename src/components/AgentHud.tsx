@@ -10,6 +10,8 @@ import {
   type SessionStatus,
 } from '@/data/agents';
 import { capture } from '@/lib/analytics';
+import { useToast } from './Toast';
+import { ConsoleToolbar, Panel, PanelHeading } from './console/Panel';
 
 /**
  * The Agent HUD: every running session, long loops and short chats together,
@@ -22,8 +24,8 @@ import { capture } from '@/lib/analytics';
 
 const TONE_CLS: Record<'ok' | 'warn' | 'bad' | 'quiet', { text: string; dot: string; ring: string }> = {
   ok: { text: 'text-signal', dot: 'bg-signal', ring: 'border-border' },
-  warn: { text: 'text-[#92400e]', dot: 'bg-[#b45309]', ring: 'border-[#b45309]/40' },
-  bad: { text: 'text-[#b91c1c]', dot: 'bg-[#dc2626]', ring: 'border-[#dc2626]/40' },
+  warn: { text: 'text-warn-fg', dot: 'bg-warn', ring: 'border-warn/40' },
+  bad: { text: 'text-danger-fg', dot: 'bg-danger', ring: 'border-danger/40' },
   quiet: { text: 'text-muted', dot: 'bg-border', ring: 'border-border' },
 };
 
@@ -37,6 +39,7 @@ const FILTERS: Array<{ key: 'all' | SessionStatus; label: string }> = [
 ];
 
 export function AgentHud() {
+  const { toast } = useToast();
   const [fleet, setFleet] = useState<AgentSession[]>(demoFleet);
   const [filter, setFilter] = useState<'all' | SessionStatus>('all');
   const [live, setLive] = useState(true);
@@ -85,6 +88,7 @@ export function AgentHud() {
 
   const resolve = (id: string) => {
     capture('hud_attention_resolved', { session: id });
+    const name = fleet.find((s) => s.id === id)?.name;
     setFleet((prev) =>
       prev.map((s) =>
         s.id === id
@@ -92,6 +96,7 @@ export function AgentHud() {
           : s,
       ),
     );
+    if (name) toast(`Resumed “${name}”.`, { tone: 'success' });
   };
 
   return (
@@ -105,8 +110,8 @@ export function AgentHud() {
       </div>
 
       {/* Attention queue */}
-      <section className="rounded-2xl border border-border bg-surface p-5">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-muted">Attention queue</h2>
+      <Panel as="section">
+        <PanelHeading>Attention queue</PanelHeading>
         {attention.length === 0 ? (
           <p className="mt-3 flex items-center gap-2 text-sm text-muted">
             <span className="h-2 w-2 rounded-full bg-signal" />
@@ -115,8 +120,8 @@ export function AgentHud() {
         ) : (
           <ul className="mt-3 space-y-2">
             {attention.map((s) => (
-              <li key={s.id} className="flex flex-wrap items-center gap-3 rounded-xl border border-[#dc2626]/30 bg-surface-2 p-3">
-                <span className="vaizer-pulse h-2 w-2 shrink-0 rounded-full bg-[#dc2626]" />
+              <li key={s.id} className="flex flex-wrap items-center gap-3 rounded-xl border border-danger/30 bg-surface-2 p-3">
+                <span className="vaizer-pulse h-2 w-2 shrink-0 rounded-full bg-danger" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold">{s.name}</p>
                   <p className="mt-0.5 text-sm leading-relaxed text-muted">{s.attention}</p>
@@ -131,11 +136,11 @@ export function AgentHud() {
             ))}
           </ul>
         )}
-      </section>
+      </Panel>
 
       {/* Fleet board */}
       <section>
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <ConsoleToolbar>
           <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Filter sessions">
             {FILTERS.map((f) => {
               const count = f.key === 'all' ? fleet.length : fleet.filter((s) => s.status === f.key).length;
@@ -162,7 +167,7 @@ export function AgentHud() {
             <span className={`h-1.5 w-1.5 rounded-full ${live ? 'vaizer-pulse bg-signal' : 'bg-border'}`} />
             {live ? 'Live (demo feed)' : 'Paused'}
           </button>
-        </div>
+        </ConsoleToolbar>
 
         <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {shown.map((s) => (
@@ -181,12 +186,12 @@ export function AgentHud() {
 
 function Stat({ label, value, tone }: { label: string; value: string; tone?: 'ok' | 'bad' }) {
   return (
-    <div className="rounded-2xl border border-border bg-surface p-4">
+    <Panel padding="sm">
       <p className="text-xs font-medium uppercase tracking-widest text-muted">{label}</p>
-      <p className={`mt-1 text-2xl font-bold tracking-tight ${tone === 'bad' ? 'text-[#b91c1c]' : tone === 'ok' ? 'text-signal' : 'text-fg'}`}>
+      <p className={`mt-1 text-2xl font-bold tracking-tight ${tone === 'bad' ? 'text-danger-fg' : tone === 'ok' ? 'text-signal' : 'text-fg'}`}>
         {value}
       </p>
-    </div>
+    </Panel>
   );
 }
 
@@ -213,7 +218,7 @@ function SessionCard({ s, onResolve }: { s: AgentSession; onResolve: () => void 
       {/* Progress */}
       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-border/60">
         <div
-          className={`vaizer-fill h-full rounded-full ${s.status === 'failed' ? 'bg-[#dc2626]' : s.status === 'done' ? 'bg-signal' : 'bg-accent'}`}
+          className={`vaizer-fill h-full rounded-full ${s.status === 'failed' ? 'bg-danger' : s.status === 'done' ? 'bg-signal' : 'bg-accent'}`}
           style={{ width: `${s.progress}%` }}
         />
       </div>
@@ -221,7 +226,7 @@ function SessionCard({ s, onResolve }: { s: AgentSession; onResolve: () => void 
       <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{s.lastEvent}</p>
 
       {s.status === 'needs-attention' && s.attention && (
-        <div className="mt-3 rounded-xl border border-[#dc2626]/30 bg-surface-2 p-3">
+        <div className="mt-3 rounded-xl border border-danger/30 bg-surface-2 p-3">
           <p className="text-xs leading-relaxed text-fg">{s.attention}</p>
           <button onClick={onResolve} className="mt-2 text-xs font-semibold text-accent hover:text-accent-hover">
             Resolve &amp; resume →
