@@ -18,6 +18,8 @@ import {
   type StoredPrompt,
 } from '@/lib/prompt-store';
 import { capture } from '@/lib/analytics';
+import { useToast } from './Toast';
+import { ConsoleToolbar, Panel, PanelHeading } from './console/Panel';
 
 /**
  * The prompt workbench: library (left) + editor + live analysis (right).
@@ -28,12 +30,13 @@ import { capture } from '@/lib/analytics';
  */
 
 const SEVERITY_META: Record<Severity, { label: string; cls: string }> = {
-  high: { label: 'High', cls: 'bg-[#dc2626]/10 text-[#b91c1c] border-[#dc2626]/30' },
-  medium: { label: 'Medium', cls: 'bg-[#b45309]/10 text-[#92400e] border-[#b45309]/30' },
+  high: { label: 'High', cls: 'bg-danger/10 text-danger-fg border-danger/30' },
+  medium: { label: 'Medium', cls: 'bg-warn/10 text-warn-fg border-warn/30' },
   low: { label: 'Low', cls: 'bg-border/60 text-subtle border-border' },
 };
 
 export function PromptWorkbench() {
+  const { toast } = useToast();
   const [prompts, setPrompts] = useState<StoredPrompt[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [preference, setPreference] = useState<Preference>('balanced');
@@ -76,19 +79,23 @@ export function PromptWorkbench() {
 
   const onSaveVersion = () => {
     if (!active) return;
+    const nextVersion = (active.versions[active.versions.length - 1]?.v ?? 0) + 1;
     saveVersion(active.id);
     capture('prompt_version_saved');
     refresh();
     setSavedFlash(true);
     setTimeout(() => setSavedFlash(false), 1600);
+    toast(`Saved “${active.name}” as v${nextVersion}.`, { tone: 'success' });
   };
 
   const onDelete = () => {
     if (!active) return;
+    const name = active.name;
     deletePrompt(active.id);
     const all = listPrompts();
     setPrompts(all);
     setActiveId(all[0]?.id ?? null);
+    toast(`Deleted “${name}”.`);
   };
 
   if (!hydrated) {
@@ -101,7 +108,7 @@ export function PromptWorkbench() {
       <aside className="lg:sticky lg:top-24 lg:self-start">
         <div className="rounded-2xl border border-border bg-surface p-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-muted">Library</h2>
+            <PanelHeading>Library</PanelHeading>
             <button
               onClick={onNew}
               className="rounded-lg bg-accent px-2.5 py-1 text-xs font-semibold text-accent-fg transition-transform hover:-translate-y-0.5"
@@ -161,7 +168,7 @@ export function PromptWorkbench() {
               </button>
               <button
                 onClick={onDelete}
-                className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-[#dc2626] hover:text-[#b91c1c]"
+                className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-danger hover:text-danger-fg"
               >
                 Delete
               </button>
@@ -217,13 +224,13 @@ export function PromptWorkbench() {
         {analysis && (
           <>
             {/* Review: score, profile, issues */}
-            <section className="rounded-2xl border border-border bg-surface p-5">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-sm font-semibold uppercase tracking-widest text-muted">Prompt review</h2>
+            <Panel as="section">
+              <ConsoleToolbar>
+                <PanelHeading>Prompt review</PanelHeading>
                 <span className="font-mono text-xs text-muted">
                   {analysis.profile.typeLabel} · {analysis.profile.complexity} complexity
                 </span>
-              </div>
+              </ConsoleToolbar>
 
               <div className="mt-4 grid gap-4 sm:grid-cols-[110px_1fr]">
                 <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-surface-2 p-4">
@@ -274,12 +281,12 @@ export function PromptWorkbench() {
                   ))}
                 </ul>
               </div>
-            </section>
+            </Panel>
 
             {/* Model fit */}
-            <section className="rounded-2xl border border-border bg-surface p-5">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-sm font-semibold uppercase tracking-widest text-muted">Which model should run it</h2>
+            <Panel as="section">
+              <ConsoleToolbar>
+                <PanelHeading>Which model should run it</PanelHeading>
                 <div className="flex rounded-lg border border-border p-0.5" role="radiogroup" aria-label="Optimization preference">
                   {(
                     [
@@ -304,7 +311,7 @@ export function PromptWorkbench() {
                     </button>
                   ))}
                 </div>
-              </div>
+              </ConsoleToolbar>
 
               <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {[...analysis.assessments]
@@ -317,7 +324,7 @@ export function PromptWorkbench() {
                 Cost = ~{analysis.inputTokens.toLocaleString()} input + ~{analysis.estOutputTokens.toLocaleString()} estimated output tokens at each
                 model&apos;s list price. Estimates, not quotes.
               </p>
-            </section>
+            </Panel>
 
             {/* Plan paths */}
             <PlanPaths assessments={analysis.assessments} recommended={analysis.recommended} />
@@ -353,7 +360,7 @@ function ModelCard({ a, recommended }: { a: ModelAssessment; recommended: boolea
         </div>
         <div className="flex justify-between">
           <dt className="text-muted">fit</dt>
-          <dd className={a.fits ? 'text-signal' : 'text-[#b45309]'}>{a.fits ? 'clears the bar' : 'below the bar'}</dd>
+          <dd className={a.fits ? 'text-signal' : 'text-warn'}>{a.fits ? 'clears the bar' : 'below the bar'}</dd>
         </div>
         <div className="flex justify-between">
           <dt className="text-muted">score</dt>
@@ -383,9 +390,9 @@ function PlanPaths({ assessments, recommended }: { assessments: ModelAssessment[
   const shown = assessments.filter((a) => selected.includes(a.model.id));
 
   return (
-    <section className="rounded-2xl border border-border bg-surface p-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-muted">Estimated plan path, per model</h2>
+    <Panel as="section">
+      <ConsoleToolbar>
+        <PanelHeading>Estimated plan path, per model</PanelHeading>
         <div className="flex flex-wrap gap-1.5">
           {assessments.map((a) => (
             <button
@@ -400,7 +407,7 @@ function PlanPaths({ assessments, recommended }: { assessments: ModelAssessment[
             </button>
           ))}
         </div>
-      </div>
+      </ConsoleToolbar>
       <p className="mt-1 text-xs text-muted">How each model would process this prompt differently, from first read to final answer. Compare up to 3.</p>
 
       <div className={`mt-4 grid gap-4 ${shown.length === 1 ? '' : shown.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'}`}>
@@ -425,6 +432,6 @@ function PlanPaths({ assessments, recommended }: { assessments: ModelAssessment[
           </div>
         ))}
       </div>
-    </section>
+    </Panel>
   );
 }

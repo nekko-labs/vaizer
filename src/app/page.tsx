@@ -75,8 +75,10 @@ export default function HomePage() {
           </Reveal>
           <Reveal load delay={0.08}>
             <h1 className="mt-6 text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
-              <span className="text-accent">See</span>, shape, and{' '}
-              <span className="text-signal">steer</span> your agents.
+              See how your agents, skills, and harness
+              <br />
+              <span className="text-accent">works</span> and what they&apos;re{' '}
+              <span className="text-signal">focused on</span>.
             </h1>
           </Reveal>
           <Reveal load delay={0.16}>
@@ -189,7 +191,7 @@ export default function HomePage() {
       <section className="mt-24">
         <Reveal>
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Built on one idea: agents are legible.
+            Built on one idea: You can visualize anything.
           </h2>
         </Reveal>
         <Stagger className="mt-8 grid gap-5 sm:grid-cols-3">
@@ -293,13 +295,13 @@ function FeatureCard({
 /** Hero node graph: a compact static version of the workflow canvas. */
 function HeroGraph() {
   const nodes = [
-    { x: 12, y: 70, c: '#b45309', label: '/command' },
-    { x: 118, y: 30, c: '#2563eb', label: 'context' },
-    { x: 118, y: 110, c: '#7c3aed', label: 'agent' },
-    { x: 224, y: 70, c: '#a16207', label: 'decide' },
-    { x: 330, y: 30, c: '#0f766e', label: 'tool' },
-    { x: 330, y: 110, c: '#db2777', label: 'loop' },
-    { x: 436, y: 70, c: '#15803d', label: 'output' },
+    { x: 12, y: 70, c: 'var(--node-trigger)', label: '/command' },
+    { x: 118, y: 30, c: 'var(--node-context)', label: 'context' },
+    { x: 118, y: 110, c: 'var(--node-agent)', label: 'agent' },
+    { x: 224, y: 70, c: 'var(--node-decision)', label: 'decide' },
+    { x: 330, y: 30, c: 'var(--node-tool)', label: 'tool' },
+    { x: 330, y: 110, c: 'var(--node-loop)', label: 'loop' },
+    { x: 436, y: 70, c: 'var(--node-output)', label: 'output' },
   ];
   const edges: Array<[number, number, boolean]> = [
     [0, 1, false],
@@ -383,11 +385,11 @@ function HeroGraph() {
 /** Compact workflow strip for the Skills feature card. */
 function WorkflowPreview() {
   const steps = [
-    { c: '#b45309', label: 'trigger' },
-    { c: '#2563eb', label: 'context' },
-    { c: '#7c3aed', label: 'reason' },
-    { c: '#0f766e', label: 'tool' },
-    { c: '#15803d', label: 'output' },
+    { c: 'var(--node-trigger)', label: 'trigger' },
+    { c: 'var(--node-context)', label: 'context' },
+    { c: 'var(--node-agent)', label: 'reason' },
+    { c: 'var(--node-tool)', label: 'tool' },
+    { c: 'var(--node-output)', label: 'output' },
   ];
   return (
     <div className="flex items-center gap-1.5 overflow-x-auto">
@@ -417,8 +419,8 @@ function PromptPreview() {
       </div>
       <div className="min-w-0 flex-1 space-y-1.5">
         {[
-          ['bg-[#dc2626]', 'Conflicting length instructions'],
-          ['bg-[#b45309]', 'No success criteria'],
+          ['bg-danger', 'Conflicting length instructions'],
+          ['bg-warn', 'No success criteria'],
           ['bg-signal', 'Pick: Sonnet 5 · $0.014 per run'],
         ].map(([dot, label]) => (
           <div key={label} className="flex items-center gap-2 rounded-lg border border-border bg-surface-2 px-2.5 py-1">
@@ -464,7 +466,7 @@ function ConfigPreview() {
 function HudPreview() {
   const rows: Array<{ name: string; status: string; dot: string; pct: number }> = [
     { name: 'DB migration loop', status: 'running', dot: 'bg-signal', pct: 64 },
-    { name: 'Dependency audit', status: 'needs you', dot: 'bg-[#dc2626]', pct: 80 },
+    { name: 'Dependency audit', status: 'needs you', dot: 'bg-danger', pct: 80 },
     { name: 'Chat: billing spec', status: 'running', dot: 'bg-signal', pct: 55 },
   ];
   return (

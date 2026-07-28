@@ -5,6 +5,8 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { PostHogProvider } from '@/components/PostHogProvider';
 import { MotionProvider } from '@/components/motion';
+import { ToastProvider } from '@/components/Toast';
+import { CommandPalette } from '@/components/CommandPalette';
 import { site } from '@/lib/site';
 import { Analytics } from '@vercel/analytics/next';
 
@@ -69,11 +71,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <PostHogProvider>
-          <SiteHeader />
-          <main id="main">
-            <MotionProvider>{children}</MotionProvider>
-          </main>
-          <SiteFooter />
+          <ToastProvider>
+            <CommandPalette />
+            <SiteHeader />
+            <main id="main">
+              <MotionProvider>{children}</MotionProvider>
+            </main>
+            <SiteFooter />
+          </ToastProvider>
         </PostHogProvider>
         <Analytics />
       </body>

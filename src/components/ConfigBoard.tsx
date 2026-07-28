@@ -11,6 +11,7 @@ import {
   type Project,
 } from '@/data/prompt-config';
 import { capture } from '@/lib/analytics';
+import { useToast } from './Toast';
 
 /**
  * The prompt-config board: LaunchDarkly's flag workflow applied to prompts.
@@ -23,7 +24,7 @@ import { capture } from '@/lib/analytics';
 
 const CACHE_META: Record<CacheStatus, { label: string; cls: string; dot: string }> = {
   cached: { label: 'Cached', cls: 'text-signal', dot: 'bg-signal' },
-  stale: { label: 'Stale · re-caching', cls: 'text-[#92400e]', dot: 'bg-[#b45309]' },
+  stale: { label: 'Stale · re-caching', cls: 'text-warn-fg', dot: 'bg-warn' },
   uncached: { label: 'Not cached', cls: 'text-muted', dot: 'bg-border' },
 };
 
@@ -38,6 +39,7 @@ function relTime(iso?: string): string {
 }
 
 export function ConfigBoard() {
+  const { toast } = useToast();
   const [projects, setProjects] = useState<Project[]>([]);
   const [projectId, setProjectId] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -102,6 +104,7 @@ export function ConfigBoard() {
   const onInvalidateAll = (env: Environment) => {
     if (!project) return;
     capture('config_cache_invalidated', { flag: 'all', env });
+    const affected = project.flags.filter((flag) => flag.env[env].enabled).length;
     mutate((draft) => {
       const p = draft.find((x) => x.id === project.id);
       p?.flags.forEach((flag) => {
@@ -109,6 +112,12 @@ export function ConfigBoard() {
       });
     });
     project.flags.forEach((f) => scheduleRecache(f.id, env));
+    toast(
+      affected === 0
+        ? `No cached prompts to invalidate in ${env}.`
+        : `Invalidated ${affected} prompt${affected === 1 ? '' : 's'} in ${env}; re-caching on next request.`,
+      { tone: affected === 0 ? 'default' : 'warn' },
+    );
   };
 
   if (!hydrated) {

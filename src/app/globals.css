@@ -25,6 +25,22 @@
   --color-accent-fg: var(--accent-fg);
   --color-signal: var(--signal);
 
+  /* Status: fail/needs-attention (danger) and partial/stale/waiting (warn),
+     each with a stronger `-fg` tuned for readable text on the light canvas. */
+  --color-danger: var(--danger);
+  --color-danger-fg: var(--danger-fg);
+  --color-warn: var(--warn);
+  --color-warn-fg: var(--warn-fg);
+
+  /* Node-kind hues (carried over from Dojo, tuned for the light canvas). */
+  --color-node-trigger: var(--node-trigger);
+  --color-node-context: var(--node-context);
+  --color-node-agent: var(--node-agent);
+  --color-node-tool: var(--node-tool);
+  --color-node-decision: var(--node-decision);
+  --color-node-loop: var(--node-loop);
+  --color-node-output: var(--node-output);
+
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: var(--font-mono-jb), ui-monospace, "SF Mono", Menlo, Monaco,
@@ -48,6 +64,22 @@
   --accent-hover: #4536c0;
   --accent-fg: #fbfaf5;
   --signal: #0e7c72;
+
+  /* Status colors on light (see TASKS.md "Design system: Vellum"). */
+  --danger: #dc2626;
+  --danger-fg: #b91c1c;
+  --warn: #b45309;
+  --warn-fg: #92400e;
+
+  /* Node-kind hues: trigger amber, context blue, agent violet, tool teal-green,
+     decision yellow, loop pink, output green. */
+  --node-trigger: #b45309;
+  --node-context: #2563eb;
+  --node-agent: #7c3aed;
+  --node-tool: #0f766e;
+  --node-decision: #a16207;
+  --node-loop: #db2777;
+  --node-output: #15803d;
 
   --node-bg: #fbfaf5;
 }
