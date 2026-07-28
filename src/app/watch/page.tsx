@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: 'Watch',
   description:
     'Watch a long-running agent loop as a journey toward victory: milestones on a path, a marker that advances, and a feed of what the agent just tried.',
+  alternates: { canonical: '/watch' },
 };
 
 export default function WatchPage() {

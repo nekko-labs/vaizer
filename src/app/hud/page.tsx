@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'Agent HUD',
   description:
     'A command center for every agent session: long-running loops and short chats together, with progress, spend, and an attention queue that surfaces the ones that actually need you.',
+  alternates: { canonical: '/hud' },
 };
 
 export default function HudPage() {
