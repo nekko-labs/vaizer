@@ -29,11 +29,29 @@ export const metadata: Metadata = {
     template: `%s · ${site.name}`,
   },
   description: site.description,
+  // Inherited by every route. Canonicals are set per page, since a site-wide
+  // one here would canonicalize every route to the home page.
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
+  },
   openGraph: {
     title: site.name,
     description: site.description,
     siteName: site.name,
     type: 'website',
+    locale: 'en_US',
+    images: [{ url: '/icon.png', width: 512, height: 512, alt: `${site.name}: ${site.tagline}` }],
+  },
+  twitter: {
+    card: 'summary',
+    title: site.name,
+    description: site.description,
+    images: ['/icon.png'],
+  },
+  alternates: {
+    types: { 'text/plain': [{ url: '/llms.txt', title: `${site.name} for LLMs` }] },
   },
 };
 

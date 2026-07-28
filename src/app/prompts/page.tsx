@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'Prompts',
   description:
     'Write, store, and version your prompts, and analyze each one: issues and weak points, the decisions it hands to the model, cost per model, and which model should run it.',
+  alternates: { canonical: '/prompts' },
 };
 
 export default function PromptsPage() {

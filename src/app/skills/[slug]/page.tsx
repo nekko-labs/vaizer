@@ -18,6 +18,8 @@ import { SkillFeedback } from '@/components/SkillFeedback';
 import { SkillWorkflow } from '@/components/SkillWorkflow';
 import { DiscordCTA } from '@/components/DiscordCTA';
 import { ExternalLinkIcon, GitHubIcon } from '@/components/icons';
+import { JsonLd } from '@/components/JsonLd';
+import { site } from '@/lib/site';
 
 type Params = { slug: string };
 
@@ -33,7 +35,26 @@ export async function generateMetadata({
   const { slug } = await params;
   const skill = getSkillBySlug(slug);
   if (!skill) return {};
-  return { title: skill.name, description: skill.description };
+  return {
+    title: skill.name,
+    description: skill.description,
+    keywords: skill.tags,
+    alternates: { canonical: `/skills/${skill.slug}` },
+    openGraph: {
+      type: 'article',
+      title: `${skill.name} · ${site.name}`,
+      description: skill.description,
+      url: `/skills/${skill.slug}`,
+      // A child openGraph object replaces the layout's, so restate the image.
+      images: [{ url: '/icon.png', width: 512, height: 512, alt: site.name }],
+    },
+    twitter: {
+      card: 'summary',
+      title: `${skill.name} · ${site.name}`,
+      description: skill.description,
+      images: ['/icon.png'],
+    },
+  };
 }
 
 export const revalidate = 3600;
@@ -46,8 +67,52 @@ export default async function SkillDetailPage({ params }: { params: Promise<Para
   const votes = await getVoteCount(skill.id);
   const installable = isInstallable(skill);
 
+  // A skill is source you run, so SoftwareSourceCode: it carries the author,
+  // the origin repo, and (when installable) how to install it.
+  const skillSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareSourceCode',
+    name: skill.name,
+    description: skill.longDescription ?? skill.description,
+    abstract: skill.description,
+    url: `${site.url}/skills/${skill.slug}`,
+    codeRepository: skill.sourceUrl,
+    applicationCategory: categoryLabels[skill.category],
+    keywords: skill.tags,
+    inLanguage: 'en',
+    author: { '@type': 'Organization', name: skill.author },
+    isPartOf: { '@id': `${site.url}/#website` },
+    ...(installable
+      ? {
+          installUrl: skillsMarketplace.repoUrl,
+          potentialAction: {
+            '@type': 'ConsumeAction',
+            name: 'Install',
+            instrument: skill.installCommand,
+          },
+        }
+      : {}),
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: site.name, item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Skills', item: `${site.url}/skills` },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: skill.name,
+        item: `${site.url}/skills/${skill.slug}`,
+      },
+    ],
+  };
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+      <JsonLd data={skillSchema} />
+      <JsonLd data={breadcrumbSchema} />
       <Link href="/skills" className="text-sm text-accent hover:text-accent-hover">
         ← Skills
       </Link>

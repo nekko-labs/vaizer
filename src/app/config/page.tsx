@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'Prompt config',
   description:
     'Feature-flag your prompts per project and environment: toggle what is served in development, staging, and production, and cache or invalidate prompts like a LaunchDarkly flag.',
+  alternates: { canonical: '/config' },
 };
 
 export default function ConfigPage() {

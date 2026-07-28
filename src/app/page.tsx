@@ -1,7 +1,57 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Reveal, Stagger, StaggerItem } from '@/components/motion';
 import { ArrowRightIcon } from '@/components/icons';
 import { VaizerMark } from '@/components/Logo';
+import { JsonLd } from '@/components/JsonLd';
+import { site } from '@/lib/site';
+
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+};
+
+/** Vaizer itself, for search and answer engines. */
+const siteSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${site.parentUrl}/#organization`,
+      name: site.parentName,
+      url: site.parentUrl,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${site.url}/#website`,
+      url: site.url,
+      name: site.name,
+      description: site.description,
+      inLanguage: 'en',
+      publisher: { '@id': `${site.parentUrl}/#organization` },
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': `${site.url}/#app`,
+      name: site.name,
+      url: site.url,
+      applicationCategory: 'DeveloperApplication',
+      applicationSubCategory: 'Agent and prompt management',
+      operatingSystem: 'Web browser',
+      description: site.description,
+      featureList: [
+        'Skill workflow visualizer: see the trigger, agent steps, tool calls, decisions, and output of any skill before installing it',
+        'Skill catalog, plus inspection of any skill on GitHub',
+        'Public skills catalog API',
+        'Prompt workbench: write, store, version, and analyze prompts, including cost per model',
+        'Prompt config: feature-flag prompts per project and environment',
+        'Agent HUD: every session in one command center, with progress, spend, and an attention queue',
+        'Watch: follow a long-running agent loop as it advances through milestones',
+      ],
+      publisher: { '@id': `${site.parentUrl}/#organization` },
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    },
+  ],
+};
 
 /**
  * Marketing home. One scroll to grasp the pitch (agent and prompt management,
@@ -13,6 +63,7 @@ import { VaizerMark } from '@/components/Logo';
 export default function HomePage() {
   return (
     <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      <JsonLd data={siteSchema} />
       {/* Hero */}
       <section className="grid items-center gap-12 pb-16 pt-20 sm:pt-28 lg:min-h-[70vh] lg:grid-cols-[1.05fr_1fr] lg:gap-12">
         <div className="text-center lg:text-left">
