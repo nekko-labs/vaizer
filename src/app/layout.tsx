@@ -50,15 +50,21 @@ export const metadata: Metadata = {
     description: site.description,
     images: ['/icon.png'],
   },
-  alternates: {
-    types: { 'text/plain': [{ url: '/llms.txt', title: `${site.name} for LLMs` }] },
-  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrains.variable}`}>
       <body className="min-h-screen bg-bg text-fg antialiased">
+        {/* Points LLM-facing crawlers at the plain-text site summary. Rendered
+            here rather than via metadata.alternates.types, which Next does not
+            currently emit; React hoists this into <head>. */}
+        <link
+          rel="alternate"
+          type="text/plain"
+          href="/llms.txt"
+          title={`${site.name} for LLMs`}
+        />
         {/* Decorative signal backdrop: dot-grid + drifting glow behind everything */}
         <div data-signal-bg aria-hidden="true">
           <span className="glow-1" />
