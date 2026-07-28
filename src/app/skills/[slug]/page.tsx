@@ -46,13 +46,13 @@ export async function generateMetadata({
       description: skill.description,
       url: `/skills/${skill.slug}`,
       // A child openGraph object replaces the layout's, so restate the image.
-      images: [{ url: '/icon.png', width: 512, height: 512, alt: site.name }],
+      images: [{ url: `${site.url}/og.png`, width: 1200, height: 630, type: 'image/png', alt: `${site.name}: ${site.tagline}` }],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title: `${skill.name} · ${site.name}`,
       description: skill.description,
-      images: ['/icon.png'],
+      images: [`${site.url}/og.png`],
     },
   };
 }
