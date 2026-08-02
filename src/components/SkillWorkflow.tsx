@@ -12,7 +12,7 @@ import {
  * The skill workflow visualizer: an n8n / Make-style node canvas that shows the
  * steps a skill runs through, next to a side panel that walks the run in order.
  * Clicking a node (on the canvas or in the list) explains that step, what its
- * kind means, and where it branches or loops. Ported from the Open Paw desktop
+ * kind means, and where it branches or loops. Ported from the Nekkos desktop
  * app so the marketplace and the app speak one visual language for skills.
  */
 
