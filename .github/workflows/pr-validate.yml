@@ -1,0 +1,68 @@
+# Validates contributed skills on every pull request.
+#
+# SECURITY MODEL (read before editing):
+#   - Trigger is `pull_request`, so for fork PRs the GITHUB_TOKEN is READ-ONLY
+#     and NO repository secrets are exposed. This job runs untrusted PR code's
+#     *files* but is powerless.
+#   - It performs STATIC checks only. It NEVER executes the contributed skill or
+#     any bundled script. Do not add a step that runs the skill here.
+#   - Do NOT change this to `pull_request_target` and do NOT add secrets — that
+#     would turn an untrusted-code checkout into a repo-compromise ("pwn request").
+#   - Posting the result back to the PR needs write access, so it is done by the
+#     separate, privileged `pr-comment.yml` (triggered by workflow_run) which
+#     never checks out PR code.
+name: pr-validate
+
+on:
+  pull_request:
+    paths:
+      - 'plugins/**'
+      - 'tools/**'
+      - 'schema/**'
+      - '.claude-plugin/**'
+
+permissions:
+  contents: read   # setting any scope zeroes all unspecified scopes (least privilege)
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR code (powerless — read-only token, no secrets)
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 20
+
+      - name: Validate skill structure & frontmatter (static)
+        run: node tools/validate-skill.mjs --all
+
+      - name: Security lint (static — prompt injection, exfil, broad grants)
+        run: node tools/lint-skill-security.mjs --all
+
+      - name: Validate marketplace + catalog JSON
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('.claude-plugin/marketplace.json','utf8')); console.log('marketplace.json OK')"
+          node -e "JSON.parse(require('fs').readFileSync('catalog.json','utf8')); console.log('catalog.json OK')"
+
+      - name: ShellCheck bundled shell scripts
+        run: |
+          shopt -s globstar nullglob
+          files=(plugins/**/*.sh)
+          if [ ${#files[@]} -eq 0 ]; then echo "no shell scripts to check"; else shellcheck "${files[@]}"; fi
+
+      # Record the PR number so the privileged comment workflow can find it.
+      # (workflow_run does not expose the PR number directly.)
+      - name: Save PR metadata
+        if: always()
+        run: echo "${{ github.event.number }}" > pr-number.txt
+
+      - name: Upload PR metadata
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pr-meta
+          path: pr-number.txt
+          retention-days: 1

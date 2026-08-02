@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/nekko-labs/vaizer/schema/skill-frontmatter.schema.json",
+  "title": "Agent Skill frontmatter",
+  "description": "Validates the YAML frontmatter of a SKILL.md against the agentskills.io open standard plus the Vaizer marketplace's submission rules.",
+  "type": "object",
+  "required": ["name", "description"],
+  "additionalProperties": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Lowercase letters, digits and single hyphens; 1-64 chars; must match the skill's directory name.",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "not": {
+        "anyOf": [
+          { "pattern": "anthropic" },
+          { "pattern": "claude" }
+        ]
+      }
+    },
+    "description": {
+      "type": "string",
+      "description": "What the skill does AND when to use it, written in the third person. 1-1024 chars.",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "license": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "compatibility": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "allowed-tools": {
+      "type": "string",
+      "description": "Space-separated pre-approved tools. A grant, not a sandbox — keep it minimal. Bare 'Bash' / 'Bash(*)' is rejected by the security lint."
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Arbitrary string map. Conventionally carries author, version, category, tags.",
+      "additionalProperties": { "type": ["string", "number", "boolean"] },
+      "properties": {
+        "version": { "type": ["string", "number"] },
+        "author": { "type": "string" },
+        "category": { "type": "string" },
+        "tags": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,65 @@
+# Posts the validation result back to the PR.
+#
+# SECURITY MODEL (read before editing):
+#   - Triggered by `workflow_run` after `pr-validate` finishes. This runs in the
+#     BASE repo context with a writable token, so it must NEVER check out or
+#     execute PR code. It only downloads the small metadata artifact produced by
+#     the powerless validate job and posts a comment.
+#   - Untrusted data (the PR number) is read from a file and validated as an
+#     integer before use — never interpolated into a shell `run:` step.
+name: pr-comment
+
+on:
+  workflow_run:
+    workflows: ["pr-validate"]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read           # to download the artifact from the triggering run
+  pull-requests: write    # to post the comment
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download PR metadata from the validate run
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: pr-meta
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment result on the PR
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        with:
+          script: |
+            const fs = require('fs');
+            // Untrusted input: read PR number from file, accept only digits.
+            const raw = fs.readFileSync('pr-number.txt', 'utf8').trim();
+            if (!/^[0-9]+$/.test(raw)) {
+              core.setFailed(`unexpected PR number: ${JSON.stringify(raw)}`);
+              return;
+            }
+            const prNumber = parseInt(raw, 10);
+            const passed = context.payload.workflow_run.conclusion === 'success';
+            const body = passed
+              ? [
+                  '✅ **Automated checks passed.**',
+                  '',
+                  'Structure, frontmatter, and the static security lint are clean.',
+                  '',
+                  '> These checks prove the skill is *well-formed and statically clean* — they **cannot** prove it is *safe*. A Nekko Labs maintainer (CODEOWNERS) will review before merge. End users: skills run with your machine’s privileges — audit before use.',
+                ].join('\n')
+              : [
+                  '❌ **Automated checks failed.**',
+                  '',
+                  'See the **pr-validate** run for details (structure / frontmatter / security lint).',
+                  'Fix the reported issues and push again. See `CONTRIBUTING.md` for the rules.',
+                ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body,
+            });

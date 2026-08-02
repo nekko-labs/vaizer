@@ -1,0 +1,13 @@
+# Skill contributions require review by a Nekko Labs maintainer before merge.
+# CODEOWNERS lives on the base branch, so it applies to pull requests from forks.
+# This human review gate is load-bearing: automated CI can prove a skill is
+# well-formed and statically clean, but cannot prove it is safe.
+#
+# Scoped to the marketplace paths only. The rest of the repo is the Vaizer site,
+# which does not need the same gate.
+/plugins/           @nekko-labs/maintainers
+/schema/            @nekko-labs/maintainers
+/tools/             @nekko-labs/maintainers
+/.claude-plugin/    @nekko-labs/maintainers
+/catalog.json       @nekko-labs/maintainers
+/.github/workflows/ @nekko-labs/maintainers

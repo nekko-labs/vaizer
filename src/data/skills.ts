@@ -8,9 +8,11 @@
  *  - `curated`        — great external skills (e.g. Anthropic's). Linked with
  *                       attribution, NOT re-hosted — install from their source.
  *
- * Installable skills (nekko-official + community) live in the marketplace repo
- * `nekko-labs/nekko-dojo-skills` and carry an `installCommand`. Curated entries
- * link out via `sourceUrl` and have no install command in our channel.
+ * Installable skills (nekko-official + community) live in this repo under
+ * `plugins/`, which doubles as a Claude Code plugin marketplace, and carry an
+ * `installCommand`. Curated entries link out via `sourceUrl` and have no install
+ * command in our channel. (Until 2026-08-02 the plugins lived in a separate repo,
+ * `nekko-labs/nekko-dojo-skills`, and installed as `@nekko-dojo-skills`.)
  *
  * This is structured, typed data (v1). A future enhancement can generate it
  * from the marketplace's `catalog.json`. Vote counts are NOT stored here —
@@ -93,11 +95,11 @@ export type Skill = {
   workflow?: SkillWorkflow;
 };
 
-/** The marketplace these skills install from. */
+/** The marketplace these skills install from: this repo. */
 export const skillsMarketplace = {
-  name: 'nekko-dojo-skills',
-  repoUrl: 'https://github.com/nekko-labs/nekko-dojo-skills',
-  addCommand: '/plugin marketplace add nekko-labs/nekko-dojo-skills',
+  name: 'vaizer',
+  repoUrl: 'https://github.com/nekko-labs/vaizer',
+  addCommand: '/plugin marketplace add nekko-labs/vaizer',
 } as const;
 
 export const sourceLabels: Record<SkillSource, string> = {
@@ -147,8 +149,8 @@ export const skills: Skill[] = [
     source: 'nekko-official',
     author: 'Nekko Labs',
     sourceUrl:
-      'https://github.com/nekko-labs/nekko-dojo-skills/tree/main/plugins/domain-finder',
-    installCommand: '/plugin install domain-finder@nekko-dojo-skills',
+      'https://github.com/nekko-labs/vaizer/tree/main/plugins/domain-finder',
+    installCommand: '/plugin install domain-finder@vaizer',
     beginnerFriendly: true,
     featured: true,
     workflow: wf(
@@ -191,8 +193,8 @@ export const skills: Skill[] = [
     source: 'nekko-official',
     author: 'Nekko Labs',
     sourceUrl:
-      'https://github.com/nekko-labs/nekko-dojo-skills/tree/main/plugins/nyaa',
-    installCommand: '/plugin install nyaa@nekko-dojo-skills',
+      'https://github.com/nekko-labs/vaizer/tree/main/plugins/nyaa',
+    installCommand: '/plugin install nyaa@vaizer',
     featured: true,
     workflow: wf(
       [
@@ -232,8 +234,8 @@ export const skills: Skill[] = [
     source: 'nekko-official',
     author: 'Nekko Labs',
     sourceUrl:
-      'https://github.com/nekko-labs/nekko-dojo-skills/tree/main/plugins/resume-checker',
-    installCommand: '/plugin install resume-checker@nekko-dojo-skills',
+      'https://github.com/nekko-labs/vaizer/tree/main/plugins/resume-checker',
+    installCommand: '/plugin install resume-checker@vaizer',
     beginnerFriendly: true,
     featured: true,
     workflow: wf(

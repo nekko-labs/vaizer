@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "vaizer",
+  "owner": { "name": "Nekko Labs", "url": "https://nekkolabs.com" },
+  "metadata": {
+    "description": "Agent Skills marketplace by Nekko Labs: official and community-contributed Claude skills. Browse them with a workflow graph each at https://vaizer.app/skills",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "domain-finder",
+      "source": "./plugins/domain-finder",
+      "description": "Brainstorm startup/project names, check domain availability across TLDs via RDAP, and vet brand/trademark conflicts.",
+      "version": "1.0.0",
+      "author": "Nekko Labs",
+      "homepage": "https://vaizer.app/skills/domain-finder",
+      "license": "MIT",
+      "category": "research",
+      "keywords": ["domains", "naming", "branding", "rdap", "startup", "trademark"]
+    },
+    {
+      "name": "resume-checker",
+      "source": "./plugins/resume-checker",
+      "description": "Check a resume against automated candidate-screening (ATS) signals and AI-centric job expectations, score it against specific job postings, then interactively apply fixes and show exactly what changed.",
+      "version": "1.0.0",
+      "author": "Nekko Labs",
+      "homepage": "https://vaizer.app/skills/resume-checker",
+      "license": "MIT",
+      "category": "career",
+      "keywords": ["resume", "cv", "ats", "job-hunt", "career", "screening", "ai-roles"]
+    },
+    {
+      "name": "nyaa",
+      "source": "./plugins/nyaa",
+      "description": "Convene a council of four reviewer cats (security, deps/supply-chain, correctness/concurrency, style) over a PR or working diff, pulling in external bot reviews too.",
+      "version": "1.0.0",
+      "author": "Nekko Labs",
+      "homepage": "https://vaizer.app/skills/nyaa",
+      "license": "MIT",
+      "category": "engineering",
+      "keywords": ["code-review", "pull-request", "security", "dependencies", "supply-chain", "concurrency", "lint"]
+    }
+  ]
+}
