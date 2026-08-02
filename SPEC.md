@@ -83,12 +83,21 @@ One search box is the whole entry point to the Skills page. You search across ou
 - Browse mode (empty query): the same skills as trust-tiered lists below (Nekko official / community / curated) plus a live "Anthropic official" group, filterable by category `[shipped]`
 - Live Anthropic index: `/api/anthropic-skills` reads the `anthropics/skills` repo tree + frontmatter server-side (cached 1h, no token, env-optional), deduped against catalog entries `[shipped]`
 - Per-skill detail page (deep link / SEO) with the same graph, trust tiers, install commands, per-skill `.zip` download, community upvotes + feedback (Supabase-backed) `[shipped]`
-- Marketplace install flow from `nekko-labs/nekko-dojo-skills`, shown inline for installable catalog skills `[shipped]`
+- Marketplace install flow from `nekko-labs/vaizer` (this repo is the marketplace, see below), shown inline for installable catalog skills `[shipped]`
 - **Public catalog API:** a JSON endpoint exposing the skills catalog (name, slug, description, trust tier, categories, link) so other properties can embed the list without hand-maintaining it. First consumer: Nekko Dojo's Community "Helpful tools" section. Served at `/api/skills` (CORS-open, cached 1h). `[shipped]`
 - **Third-party skills in the catalog:** skills not authored by Nekko Labs, listed with clear attribution to their real author and a distinct trust tier. First entry: **impeccable** by Paul Bakaus, listed as curated with attribution and a link to its repo. `[shipped]`
 
+### Skills: Vaizer is the marketplace
+The installable skills in the catalog live in this repo, under `plugins/`, and the repo doubles as a Claude Code plugin marketplace. Adding it once (`/plugin marketplace add nekko-labs/vaizer`) makes every Nekko-official skill installable by name and keeps them updated. *Why:* a catalog that shows you how a skill runs and then hands you an install command should own the thing it hands you. One repo means the site entry, the workflow graph, and the skill itself move together and cannot drift; the earlier split (a separate `nekko-dojo-skills` repo, retired 2026-08-02) carried the old Dojo name and kept the catalog one repo away from its own contents. `[shipped]`
+
+- This repo is a marketplace: `.claude-plugin/marketplace.json` + `plugins/<skill>/`, installable as `@vaizer` `[shipped]`
+- `catalog.json` at the repo root: a machine-readable index of the installable skills, read raw from GitHub by outside consumers (kotrain's skills shelf) `[shipped]`
+- Community contribution flow: anyone can submit a skill by pull request; static structure/frontmatter validation and a skill-specific security lint run on a powerless untrusted-PR workflow, then a Nekko Labs maintainer reviews under CODEOWNERS `[shipped]`
+- Trust tiers are declared here and mirrored on the site: Nekko official, community, curated (link-only, not re-hosted) `[shipped]`
+- The per-skill `.zip` download reads the plugin folder out of this repo at request time `[shipped]`
+
 ### Skills: Resume Checker (Nekko-official skill)
-A job-hunt skill authored by Nekko Labs, published to the marketplace (`nekko-labs/nekko-dojo-skills`) and listed in the catalog like any other skill. It checks a resume against what current automated candidate-analysis (ATS) tools screen for and against what new AI-centric role job descriptions ask for. *Why:* Dojo's audience is actively applying for jobs, and resume screening is now largely automated; a skill that evaluates against the actual screeners (and the new AI-role expectations) is concrete, differentiated value, and it seeds the catalog with a flagship Nekko-official skill. `[shipped]`
+A job-hunt skill authored by Nekko Labs, published to the marketplace (`nekko-labs/vaizer`) and listed in the catalog like any other skill. It checks a resume against what current automated candidate-analysis (ATS) tools screen for and against what new AI-centric role job descriptions ask for. *Why:* Dojo's audience is actively applying for jobs, and resume screening is now largely automated; a skill that evaluates against the actual screeners (and the new AI-role expectations) is concrete, differentiated value, and it seeds the catalog with a flagship Nekko-official skill. `[shipped]`
 
 - Input: a resume, plus optionally links to specific jobs the user wants to apply to `[shipped]`
 - Auto-detects the role type from the resume and any provided jobs, and evaluates against role-appropriate criteria (an AI-engineering resume is judged differently from a frontend one) `[shipped]`

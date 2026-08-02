@@ -1,0 +1,49 @@
+{
+  "$comment": "Machine-readable index of the skills installable from this repo's Claude Code plugin marketplace. Keep entries in sync with .claude-plugin/marketplace.json and with the site catalog in src/data/skills.ts. External consumers read this file raw from GitHub (kotrain's skills shelf). Curated external skills are catalogued on the site itself (link-only), not here.",
+  "marketplace": "vaizer",
+  "addCommand": "/plugin marketplace add nekko-labs/vaizer",
+  "skills": [
+    {
+      "id": "domain-finder",
+      "name": "Domain Finder",
+      "slug": "domain-finder",
+      "tier": "nekko-official",
+      "category": "research",
+      "description": "Brainstorm startup/project names, check domain availability across TLDs via RDAP, and vet brand/trademark conflicts.",
+      "tags": ["domains", "naming", "branding", "rdap", "startup", "trademark"],
+      "author": "Nekko Labs",
+      "version": "1.0.0",
+      "license": "MIT",
+      "installCommand": "/plugin install domain-finder@vaizer",
+      "sourceUrl": "https://github.com/nekko-labs/vaizer/tree/main/plugins/domain-finder"
+    },
+    {
+      "id": "resume-checker",
+      "name": "Resume Checker",
+      "slug": "resume-checker",
+      "tier": "nekko-official",
+      "category": "career",
+      "description": "Check a resume against automated candidate-screening (ATS) signals and AI-centric job expectations, score it against specific job postings, then interactively apply fixes and show exactly what changed.",
+      "tags": ["resume", "cv", "ats", "job-hunt", "career", "screening", "ai-roles"],
+      "author": "Nekko Labs",
+      "version": "1.0.0",
+      "license": "MIT",
+      "installCommand": "/plugin install resume-checker@vaizer",
+      "sourceUrl": "https://github.com/nekko-labs/vaizer/tree/main/plugins/resume-checker"
+    },
+    {
+      "id": "nyaa",
+      "name": "nyaa",
+      "slug": "nyaa",
+      "tier": "nekko-official",
+      "category": "engineering",
+      "description": "Convene a council of four reviewer cats (security, deps/supply-chain, correctness/concurrency, style) over a PR or working diff, pulling in external bot reviews too.",
+      "tags": ["code-review", "pull-request", "security", "dependencies", "supply-chain", "concurrency", "lint"],
+      "author": "Nekko Labs",
+      "version": "1.0.0",
+      "license": "MIT",
+      "installCommand": "/plugin install nyaa@vaizer",
+      "sourceUrl": "https://github.com/nekko-labs/vaizer/tree/main/plugins/nyaa"
+    }
+  ]
+}

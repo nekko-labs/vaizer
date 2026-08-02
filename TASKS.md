@@ -16,7 +16,7 @@ owner: Philip
 - **`motion`** (Framer Motion successor) for the quiet reveal/entrance system and the Watch view's purposeful ongoing motion.
 - **Supabase** (optional) for skill upvotes + feedback, via SECURITY-DEFINER RPCs (`cast_vote`, `submit_feedback`) and a read-only view. Degrades to inert when env is unset.
 - **PostHog** (optional, privacy-conscious) + **Vercel Analytics** for product events.
-- **JSZip** to assemble per-skill `.zip` downloads on demand from the marketplace repo.
+- **JSZip** to assemble per-skill `.zip` downloads on demand, reading the plugin folder out of this repo on GitHub.
 - Hosted on **Vercel** (nekkolabs team), domain **vaizer.app**.
 
 ### Architecture
@@ -39,6 +39,14 @@ owner: Philip
 - **Prompt store** (`src/lib/prompt-store.ts`): localStorage CRUD + immutable version snapshots, seeded on first load. Designed to swap to Supabase without changing the workbench.
 - **Prompt config** (`src/data/prompt-config.ts`): Project → PromptFlag → per-environment `{enabled, cache}` state, localStorage-persisted demo data. `ConfigBoard.tsx` owns the toggle/invalidate/re-cache workflow (invalidate marks stale; a simulated next request re-caches).
 - **HUD session model** (`src/data/agents.ts`): `AgentSession` (kind, status incl. needs-attention, progress, last event, spend) + a demo fleet and scripted events; `AgentHud.tsx` ticks it client-side. Same demo-first pattern as Watch, ready for a real session feed.
+
+### Marketplace (non-app paths)
+This repo is also the Claude Code plugin marketplace the catalog installs from, so a few root paths are deliberately outside the Next app and must not be folded into `src/`:
+- `.claude-plugin/marketplace.json` (marketplace name `vaizer`, `pluginRoot: ./plugins`) and `plugins/<skill>/{.claude-plugin/plugin.json, skills/<skill>/SKILL.md}`.
+- `catalog.json` at the repo root: machine-readable index of the installable skills. Three places must stay in sync for an installable skill: `marketplace.json`, `catalog.json`, and `src/data/skills.ts` (the site entry + workflow graph).
+- `schema/skill-frontmatter.schema.json` + `tools/{validate-skill,lint-skill-security}.mjs`: dependency-free static validators, safe to run locally (`node tools/validate-skill.mjs --all`).
+- `.github/workflows/pr-validate.yml` runs those validators on `pull_request` (read-only token, no secrets, never executes a skill); `pr-comment.yml` posts the result via `workflow_run`. Do not switch either to `pull_request_target` or add secrets. `.github/CODEOWNERS` gates the marketplace paths on `@nekko-labs/maintainers`.
+- Nothing here affects the Next build: `plugins/`, `tools/`, and `schema/` are outside `src/` and outside the tsconfig's `.ts`/`.tsx` globs.
 
 ### Conventions
 - Server Components by default; `'use client'` only for interactive islands (visualizer, explorer, vote/feedback, watch player).
@@ -77,8 +85,9 @@ owner: Philip
 - [ ] Final logo / wordmark + OG image pass (now on the Vellum palette), added 2026-07-15
 
 ### Shipped
+- [x] Absorb the plugin marketplace: `plugins/` (domain-finder, nyaa, resume-checker), `.claude-plugin/marketplace.json` (renamed to `vaizer`), root `catalog.json`, `schema/`, `tools/` (validate-skill + lint-skill-security), the untrusted-PR-safe `pr-validate`/`pr-comment` workflows, CODEOWNERS scoped to the marketplace paths, and CONTRIBUTING/SECURITY moved in from `nekko-labs/nekko-dojo-skills`, which was then deleted. Install commands changed from `@nekko-dojo-skills` to `@vaizer` and the 3 `sourceUrl`s + `skillsMarketplace` in `src/data/skills.ts` now point at this repo. Downstream: kotrain's skills shelf repointed, added+done 2026-08-02 · [Skills, Vaizer is the marketplace](SPEC.md)
 - [x] Public catalog API `/api/skills` (`src/app/api/skills/route.ts`): flat JSON view of the catalog (slug, name, description, category + label, tier + label, author, absolute skill-page URL, sourceUrl, installCommand), CORS-open GET + OPTIONS, cached 1h with stale-while-revalidate; first consumer is Nekko Dojo's Helpful tools section, added+done 2026-07-19 · [Skills, search-first workflow visualizer](SPEC.md)
-- [x] Resume Checker skill: authored in `nekko-labs/nekko-dojo-skills` (`plugins/resume-checker`, SKILL.md + ATS-signals and AI-role-signals references; five stages incl. role auto-detect, HTML report w/ per-job success likelihood, interactive accept-all-or-some fix loop, change highlights) and listed in the Vaizer catalog as Nekko-official + featured with a workflow graph and new `career` category, added+done 2026-07-19 · [Skills, Resume Checker](SPEC.md)
+- [x] Resume Checker skill: authored in the marketplace repo (`plugins/resume-checker`, SKILL.md + ATS-signals and AI-role-signals references; five stages incl. role auto-detect, HTML report w/ per-job success likelihood, interactive accept-all-or-some fix loop, change highlights) and listed in the Vaizer catalog as Nekko-official + featured with a workflow graph and new `career` category, added+done 2026-07-19 · [Skills, Resume Checker](SPEC.md)
 - [x] Impeccable (by Paul Bakaus, `pbakaus/impeccable`) added to the catalog as a curated third-party skill: attributed author, link-only (no install command in our channel), workflow graph, description states it is not a Nekko Labs skill, added+done 2026-07-19 · [Skills, search-first workflow visualizer](SPEC.md)
 - [x] Retheme to "Vellum": light warm-bone canvas, indigo-ink accent, deep-teal signal, node-kind + status colors retuned for light; `color-scheme: light`, added+done 2026-07-18 · [Cross-cutting](SPEC.md)
 - [x] Prompt workbench at `/prompts`: localStorage library w/ seeds, autosave editing, immutable version snapshots + restore (`src/lib/prompt-store.ts`, `PromptWorkbench.tsx`), added+done 2026-07-18 · [Prompts](SPEC.md)
