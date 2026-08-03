@@ -35,7 +35,7 @@ export type SkillCategory =
  * A skill's workflow graph — the steps it runs through (trigger → context →
  * agent → tools → output, with branches and loops). The skill detail page
  * renders this as an n8n / Make-style node canvas so you can see what a skill
- * actually does before you install it. Ported from the Nekkos desktop app so
+ * actually does before you install it. Ported from the Kotrain desktop app so
  * the two share one visual language for skills.
  */
 export type SkillNodeKind =
@@ -457,7 +457,7 @@ export type LayoutOptions = {
  * Left-to-right layered layout. Each node's column (layer) is its longest path
  * from a root over forward edges (back/loop edges are ignored for layering);
  * nodes sharing a layer are stacked and vertically centred so fan-outs splay
- * symmetrically. Pure + deterministic. Ported from the Nekkos desktop app.
+ * symmetrically. Pure + deterministic. Ported from the Kotrain desktop app.
  */
 export function layoutWorkflow(workflow: SkillWorkflow, opts: LayoutOptions = {}): WorkflowLayout {
   const nodeW = opts.nodeW ?? 156;
