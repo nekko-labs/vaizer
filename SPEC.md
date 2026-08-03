@@ -91,7 +91,7 @@ One search box is the whole entry point to the Skills page. You search across ou
 The installable skills in the catalog live in this repo, under `plugins/`, and the repo doubles as a Claude Code plugin marketplace. Adding it once (`/plugin marketplace add nekko-labs/vaizer`) makes every Nekko-official skill installable by name and keeps them updated. *Why:* a catalog that shows you how a skill runs and then hands you an install command should own the thing it hands you. One repo means the site entry, the workflow graph, and the skill itself move together and cannot drift; the earlier split (a separate `nekko-dojo-skills` repo, retired 2026-08-02) carried the old Dojo name and kept the catalog one repo away from its own contents. `[shipped]`
 
 - This repo is a marketplace: `.claude-plugin/marketplace.json` + `plugins/<skill>/`, installable as `@vaizer` `[shipped]`
-- `catalog.json` at the repo root: a machine-readable index of the installable skills, read raw from GitHub by outside consumers (Nekkos' skills shelf) `[shipped]`
+- `catalog.json` at the repo root: a machine-readable index of the installable skills, read raw from GitHub by outside consumers (Kotrain's skills shelf) `[shipped]`
 - Community contribution flow: anyone can submit a skill by pull request; static structure/frontmatter validation and a skill-specific security lint run on a powerless untrusted-PR workflow, then a Nekko Labs maintainer reviews under CODEOWNERS `[shipped]`
 - Trust tiers are declared here and mirrored on the site: Nekko official, community, curated (link-only, not re-hosted) `[shipped]`
 - The per-skill `.zip` download reads the plugin folder out of this repo at request time `[shipped]`

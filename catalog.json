@@ -1,5 +1,5 @@
 {
-  "$comment": "Machine-readable index of the skills installable from this repo's Claude Code plugin marketplace. Keep entries in sync with .claude-plugin/marketplace.json and with the site catalog in src/data/skills.ts. External consumers read this file raw from GitHub (Nekkos' skills shelf). Curated external skills are catalogued on the site itself (link-only), not here.",
+  "$comment": "Machine-readable index of the skills installable from this repo's Claude Code plugin marketplace. Keep entries in sync with .claude-plugin/marketplace.json and with the site catalog in src/data/skills.ts. External consumers read this file raw from GitHub (Kotrain's skills shelf). Curated external skills are catalogued on the site itself (link-only), not here.",
   "marketplace": "vaizer",
   "addCommand": "/plugin marketplace add nekko-labs/vaizer",
   "skills": [
