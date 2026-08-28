@@ -32,7 +32,7 @@
     {
       "name": "codereview-spec",
       "source": "./plugins/codereview-spec",
-      "description": "Review a change against the project's spec, and review the spec itself: catches code that drifts from SPEC.md, features shipped with no spec entry, and gaps in the spec (missing feature definitions, test expectations, folder structure, conventions). The standalone form of nyaa's Spectral lens.",
+      "description": "Reviews a change against your spec, and reviews the spec itself. Catches code the spec never promised, features shipped without a spec update, and the gaps in the spec that let them through.",
       "version": "1.0.0",
       "author": { "name": "Nekko Labs", "url": "https://nekkolabs.com" },
       "homepage": "https://vaizer.app/skills/codereview-spec",
@@ -43,7 +43,7 @@
     {
       "name": "nyaa",
       "source": "./plugins/nyaa",
-      "description": "Convene a council of five reviewer cats (spec conformance, security, deps/supply-chain, correctness/concurrency, style) over a PR or working diff: the change is reviewed against SPEC.md, and gaps in the spec itself are reported too. Pulls in external bot reviews as well.",
+      "description": "Five reviewer cats read your PR or working diff, one lens each: spec conformance, security, dependencies, correctness, and style. Choose which cats sit, and external bot reviews fold into a single verdict.",
       "version": "1.2.0",
       "author": { "name": "Nekko Labs", "url": "https://nekkolabs.com" },
       "homepage": "https://vaizer.app/skills/nyaa",
