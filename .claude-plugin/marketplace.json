@@ -30,10 +30,21 @@
       "keywords": ["resume", "cv", "ats", "job-hunt", "career", "screening", "ai-roles"]
     },
     {
+      "name": "codereview-spec",
+      "source": "./plugins/codereview-spec",
+      "description": "Review a change against the project's spec, and review the spec itself: catches code that drifts from SPEC.md, features shipped with no spec entry, and gaps in the spec (missing feature definitions, test expectations, folder structure, conventions). The standalone form of nyaa's Spectral lens.",
+      "version": "1.0.0",
+      "author": { "name": "Nekko Labs", "url": "https://nekkolabs.com" },
+      "homepage": "https://vaizer.app/skills/codereview-spec",
+      "license": "MIT",
+      "category": "engineering",
+      "keywords": ["code-review", "spec", "spec-conformance", "product-intent", "drift", "documentation", "pull-request"]
+    },
+    {
       "name": "nyaa",
       "source": "./plugins/nyaa",
       "description": "Convene a council of five reviewer cats (spec conformance, security, deps/supply-chain, correctness/concurrency, style) over a PR or working diff: the change is reviewed against SPEC.md, and gaps in the spec itself are reported too. Pulls in external bot reviews as well.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": { "name": "Nekko Labs", "url": "https://nekkolabs.com" },
       "homepage": "https://vaizer.app/skills/nyaa",
       "license": "MIT",

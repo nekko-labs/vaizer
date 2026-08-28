@@ -32,15 +32,37 @@
       "sourceUrl": "https://github.com/nekko-labs/vaizer/tree/main/plugins/resume-checker"
     },
     {
+      "id": "codereview-spec",
+      "name": "codereview-spec",
+      "slug": "codereview-spec",
+      "tier": "nekko-official",
+      "category": "engineering",
+      "description": "Review a change against the project's spec, and review the spec itself: catches code that drifts from SPEC.md, features shipped with no spec entry, and gaps in the spec (missing feature definitions, test expectations, folder structure, conventions). The standalone form of nyaa's Spectral lens.",
+      "tags": [
+        "code-review",
+        "spec",
+        "spec-conformance",
+        "product-intent",
+        "drift",
+        "documentation",
+        "pull-request"
+      ],
+      "author": "Nekko Labs",
+      "version": "1.0.0",
+      "license": "MIT",
+      "installCommand": "/plugin install codereview-spec@vaizer",
+      "sourceUrl": "https://github.com/nekko-labs/vaizer/tree/main/plugins/codereview-spec"
+    },
+    {
       "id": "nyaa",
       "name": "nyaa",
       "slug": "nyaa",
       "tier": "nekko-official",
       "category": "engineering",
-      "description": "Convene a council of five reviewer cats (spec conformance, security, deps/supply-chain, correctness/concurrency, style) over a PR or working diff: the change is reviewed against SPEC.md, and gaps in the spec itself are reported too. Pulls in external bot reviews as well.",
+      "description": "Convene a council of five reviewer cats (spec conformance, security, deps/supply-chain, correctness/concurrency, style) over a PR or working diff: the change is reviewed against SPEC.md, and gaps in the spec itself are reported too. Pulls in external bot reviews as well. The council is selectable, so you can convene just the spec or security lens instead of all five.",
       "tags": ["code-review", "pull-request", "spec", "spec-conformance", "security", "dependencies", "supply-chain", "concurrency", "lint"],
       "author": "Nekko Labs",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "license": "MIT",
       "installCommand": "/plugin install nyaa@vaizer",
       "sourceUrl": "https://github.com/nekko-labs/vaizer/tree/main/plugins/nyaa"

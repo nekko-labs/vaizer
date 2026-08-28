@@ -173,13 +173,60 @@ export const skills: Skill[] = [
     ),
   },
   {
+    id: 'codereview-spec',
+    name: 'codereview-spec',
+    slug: 'codereview-spec',
+    description:
+      "Review a change against the project's spec, and review the spec itself: catches code that drifts from SPEC.md, features shipped with no spec entry, and gaps in the spec (missing feature definitions, test expectations, folder structure, conventions). The standalone form of nyaa's Spectral lens.",
+    longDescription:
+      "The spec is what a project promised; this skill is the reviewer that cares about that promise and nothing else. It has two modes and picks between them from what you point it at. Given a pull request, a branch, or your working diff, it runs \u201Cdiff mode\u201D: it reads the spec before the code so the implementation cannot prime it, then checks both directions, whether the code does what the spec says (same behaviour, same scope, same vocabulary, no half-built feature marked shipped) and whether the spec was updated to record the change. Code that alters a feature, route, interface, or data shape while the spec still describes the old one is blocking; a pure refactor is not. Given a SPEC.md, TASKS.md, PRD, or feature document instead, it runs \u201Cspec mode\u201D and audits the document on its own: missing feature definitions, absent test expectations, undocumented folder structure and conventions, an undefined data model, missing non-goals, placeholders, contradictions, and text that an earlier merge already made stale. Gaps in the spec come back as findings with the sentence to add, never as an excuse. It is the standalone form of the Spectral lens inside the nyaa review council: use nyaa for a full review, and this when the spec is the only question.",
+    category: 'coding',
+    tags: [
+      'code-review',
+      'spec',
+      'spec-conformance',
+      'product-intent',
+      'drift',
+      'documentation',
+      'pull-request',
+    ],
+    source: 'nekko-official',
+    author: 'Nekko Labs',
+    sourceUrl:
+      'https://github.com/nekko-labs/vaizer/tree/main/plugins/codereview-spec',
+    installCommand: '/plugin install codereview-spec@vaizer',
+    beginnerFriendly: true,
+    workflow: wf(
+      [
+        { id: 't', kind: 'trigger', label: '/codereview-spec', detail: 'A PR, a diff, or a spec file' },
+        { id: 'find', kind: 'context', label: 'Find the spec', detail: 'SPEC.md, TASKS.md, PRD, AGENTS.md' },
+        { id: 'mode', kind: 'decision', label: 'Diff or spec?', detail: 'The target picks the mode' },
+        { id: 'delta', kind: 'context', label: 'Read the spec diff', detail: 'What the change did to it' },
+        { id: 'intent', kind: 'agent', label: 'Code vs intent', detail: 'Drift, scope creep, vocabulary' },
+        { id: 'audit', kind: 'agent', label: 'Audit the spec', detail: 'Gaps, contradictions, staleness' },
+        { id: 'merge', kind: 'agent', label: 'Rank findings', detail: 'Blocking vs informational' },
+        { id: 'out', kind: 'output', label: 'Spec verdict' },
+      ],
+      [
+        { from: 't', to: 'find' },
+        { from: 'find', to: 'mode' },
+        { from: 'mode', to: 'delta', label: 'diff' },
+        { from: 'mode', to: 'audit', label: 'spec' },
+        { from: 'delta', to: 'intent' },
+        { from: 'intent', to: 'audit' },
+        { from: 'audit', to: 'merge' },
+        { from: 'merge', to: 'out' },
+      ],
+    ),
+  },
+  {
     id: 'nyaa',
     name: 'nyaa',
     slug: 'nyaa',
     description:
-      'Convene a council of five reviewer cats (spec conformance, security, deps/supply-chain, correctness/concurrency, style) over a PR or working diff: the change is reviewed against SPEC.md, and gaps in the spec itself are reported too. Pulls in external bot reviews as well.',
+      'Convene a council of five reviewer cats (spec conformance, security, deps/supply-chain, correctness/concurrency, style) over a PR or working diff: the change is reviewed against SPEC.md, and gaps in the spec itself are reported too. Pulls in external bot reviews as well. The council is selectable, so you can convene just the spec or security lens instead of all five.',
     longDescription:
-      'A code-review skill that summons a council of five specialist reviewer “cats”, each with a distinct lens. The first and heaviest is spec conformance: it reads the project’s SPEC.md before the diff, then checks both directions, whether the code does what the spec says (scope, vocabulary, no half-built feature marked shipped) and whether the spec was updated to record the change. It reviews the spec itself too, so missing feature definitions, absent test expectations, undocumented folder structure and conventions come back as findings rather than silent assumptions. The other four cats cover security, dependencies and supply-chain, correctness and concurrency, and style plus lint. Point it at a GitHub pull request or your uncommitted working diff and it produces one consolidated verdict, folding in any external bot reviews (e.g. Codex) already posted on the PR. Ships a `/cr` command so you can summon the council in one line.',
+      'A code-review skill that summons a council of five specialist reviewer “cats”, each with a distinct lens. The first and heaviest is spec conformance: it reads the project’s SPEC.md before the diff, then checks both directions, whether the code does what the spec says (scope, vocabulary, no half-built feature marked shipped) and whether the spec was updated to record the change. It reviews the spec itself too, so missing feature definitions, absent test expectations, undocumented folder structure and conventions come back as findings rather than silent assumptions. The other four cats cover security, dependencies and supply-chain, correctness and concurrency, and style plus lint. Point it at a GitHub pull request or your uncommitted working diff and it produces one consolidated verdict, folding in any external bot reviews (e.g. Codex) already posted on the PR. Ships a `/cr` command so you can summon the council in one line. All five cats sit by default, and the council is selectable: pass `--cats`, `--skip`, or `--pick` for an interactive roster, or just say which lenses you want.',
     category: 'coding',
     tags: [
       'code-review',
