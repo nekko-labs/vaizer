@@ -4,11 +4,28 @@ The short checklist is in `SKILL.md`. This file is for the judgement calls: what
 counts as blocking, which findings are worth writing down, and the cases that
 look like drift but are not.
 
+## The two yardsticks
+
+A change is measured against two written promises, and they answer different
+questions. The **PR description** says what *this change* is for and what
+improves because of it. The **spec** says what *the product* is. Neither
+substitutes for the other: a diff can match the spec perfectly and still not do
+the thing its author said it would, and a diff can deliver its stated goal
+perfectly while making the spec wrong.
+
+Missing yardsticks are findings, not exemptions. No description means nobody can
+say whether the change did its job; no spec means the change cannot be placed
+against the product at all. In both cases, ask for the missing document, and
+never manufacture it from the code and then grade the code against it. A check
+that cannot fail is worse than no check.
+
 ## What makes a finding blocking
 
-Blocking means "a reader of the spec would be misled about what this software
-does". Concretely:
+Blocking means "a reader of the spec, or of the PR, would be misled about what
+this software does". Concretely:
 
+- The code does not accomplish the goal the PR description stated.
+- The description claims something the diff does not contain.
 - The code contradicts a spec statement. Not "goes beyond", contradicts.
 - A feature, user-visible behavior, route, public interface, or persisted data
   shape changed and the spec still describes the old one.
@@ -24,9 +41,66 @@ Informational:
 - Vocabulary drift on internal names that never reach a user or an API.
 - Any gap in the spec itself. These matter, but they describe a document that was
   already incomplete before this change, so they should not block this change.
+- A description that states what changed but not why it matters. Ask for the
+  value; do not hold the change hostage over it.
+- The goal reached by a different route than the description implies, with the
+  outcome the same. Ask for the description to describe what shipped.
 
 The asymmetry is deliberate: a diff should be blocked for making the spec wrong,
 not for arriving at a repo whose spec was already thin.
+
+## Judging "does the code deliver the goal?"
+
+The failure mode here is reading the diff and the description in the same breath,
+finding the same words in both, and calling it met. The description says "fix the
+double-charge on retry"; the diff adds a guard, uses the word retry, and looks
+right. Whether it is met depends on whether that guard sits on the path that
+double-charged.
+
+So trace, do not pattern-match:
+
+- Follow the claimed effect from the changed lines to a place a user reaches it.
+  A flag added but never read, a helper added but never called, a fix on a branch
+  the failing case never takes: all of these are not met, and all of them read as
+  met from the diff summary alone.
+- Judge the **value**, not just the mechanism. "Stop the timeouts" is not
+  delivered by a retry when the calls were failing on permissions. Ask what the
+  described symptom actually was and whether this change can move it.
+- Count the claims. A description promising three things and a diff doing two is
+  partially met, and which one was dropped belongs in the finding.
+- Partial is a real verdict. Use `partially met` rather than rounding to either
+  end, and say which half is missing.
+
+Do not turn this into a design review. "The goal is met, but I would have done it
+differently" is another cat's finding, or nobody's.
+
+## When the change conflicts with the spec
+
+This is the most common real finding, and the most commonly misfiled one. The
+description announces that the product now does X; the spec still says it does Y.
+The instinct is to write it up as the code violating the spec. Usually it is not:
+the change was deliberate, it was described, it was reviewed, and the only thing
+that failed is that nobody updated the document.
+
+So file it against the document:
+
+```
+[SPEC.md § Feature] still says Y; this change makes it X.
+Fix: <the sentence the section should now carry>
+```
+
+- **Blocking.** A spec that describes the old behavior is worse than a spec with
+  a hole in it: the hole is visible, the wrong sentence is not, and every future
+  reader and every future agent inherits it.
+- **The exception**, and it is the one worth slowing down for: a conflict with a
+  stated **non-goal**, **success criterion**, or **scope boundary**. Those lines
+  are decisions, not descriptions, and they do not get overwritten by whatever
+  merged most recently. Quote the line, say which side the change lands on, and
+  ask the author whether the boundary moved or the change did.
+- **Three stories, no truth.** If the description and the spec disagree *and* the
+  code matches neither, say exactly that. Do not pick a winner: only the author
+  knows which one was the intent, and guessing here produces a confident,
+  well-formatted wrong answer.
 
 ## Drift that is not drift
 
@@ -106,7 +180,8 @@ to believe.
 
 ## Writing the findings
 
-- Quote the spec. A drift finding without the spec line is an assertion.
+- Quote the spec. A drift finding without the spec line is an assertion. Quote
+  the description the same way when the finding is an unmet goal.
 - Cite `file:line` for code and `SPEC.md § section` for the document.
 - The fix for a spec gap is the sentence to add, not "document this".
 - One line of problem, one line of fix. If it needs a paragraph, the finding is

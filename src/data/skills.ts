@@ -181,17 +181,21 @@ export const skills: Skill[] = [
     name: 'codereview-spec',
     slug: 'codereview-spec',
     description:
-      "Reviews a change against your spec, and reviews the spec itself. Catches code the spec never promised, features shipped without a spec update, and the gaps in the spec that let them through.",
+      "Reviews a change against what its PR description promised and against your spec, then reviews the spec itself. Catches stated goals the code does not actually deliver, features shipped without a spec update, and the gaps in the spec that let them through.",
     longDescription:
-      'The spec review on its own: does the code do what the project said it would, and does the spec still describe reality?',
+      'The spec review on its own: does the code do what the PR said it would, does it do what the project said it would, and does the spec still describe reality?',
     highlights: [
       {
         label: 'Two modes, nothing to remember.',
         body: 'Point it at a pull request or diff and it reviews the code against the spec. Point it at a SPEC.md, TASKS.md, or PRD and it reviews that document instead. The target picks the mode.',
       },
       {
+        label: 'Checks the code against what the PR promised.',
+        body: 'It reads the description first, takes the goal and the value being claimed, then traces that claim through the diff. A goal not met is blocking. No description at all is a finding too, and it drafts one from the diff for you.',
+      },
+      {
         label: 'Catches drift in both directions.',
-        body: 'Code doing what the spec never promised, and changes that shipped while the spec still describes the old behaviour. It blocks on real feature changes and stays quiet for refactors.',
+        body: 'Code doing what the spec never promised, and changes that shipped while the spec still describes the old behaviour. A conflict is filed as a stale spec with the sentence to change, since that is almost always what it is. Blocks on real feature changes, quiet for refactors.',
       },
       {
         label: 'Tells you what the spec is missing.',
@@ -212,6 +216,7 @@ export const skills: Skill[] = [
       'spec',
       'spec-conformance',
       'product-intent',
+      'pr-description',
       'drift',
       'documentation',
       'pull-request',
@@ -227,8 +232,9 @@ export const skills: Skill[] = [
         { id: 't', kind: 'trigger', label: '/codereview-spec', detail: 'A PR, a diff, or a spec file' },
         { id: 'find', kind: 'context', label: 'Find the spec', detail: 'SPEC.md, TASKS.md, PRD, AGENTS.md' },
         { id: 'mode', kind: 'decision', label: 'Diff or spec?', detail: 'The target picks the mode' },
+        { id: 'desc', kind: 'context', label: 'Read the PR description', detail: 'The stated goal + the value claimed' },
         { id: 'delta', kind: 'context', label: 'Read the spec diff', detail: 'What the change did to it' },
-        { id: 'intent', kind: 'agent', label: 'Code vs intent', detail: 'Drift, scope creep, vocabulary' },
+        { id: 'intent', kind: 'agent', label: 'Code vs intent', detail: 'Goal met? drift, scope creep' },
         { id: 'audit', kind: 'agent', label: 'Audit the spec', detail: 'Gaps, contradictions, staleness' },
         { id: 'merge', kind: 'agent', label: 'Rank findings', detail: 'Blocking vs informational' },
         { id: 'out', kind: 'output', label: 'Spec verdict' },
@@ -236,8 +242,9 @@ export const skills: Skill[] = [
       [
         { from: 't', to: 'find' },
         { from: 'find', to: 'mode' },
-        { from: 'mode', to: 'delta', label: 'diff' },
+        { from: 'mode', to: 'desc', label: 'diff' },
         { from: 'mode', to: 'audit', label: 'spec' },
+        { from: 'desc', to: 'delta' },
         { from: 'delta', to: 'intent' },
         { from: 'intent', to: 'audit' },
         { from: 'audit', to: 'merge' },
@@ -250,13 +257,17 @@ export const skills: Skill[] = [
     name: 'nyaa',
     slug: 'nyaa',
     description:
-      'Five reviewer cats read your PR or working diff, one lens each: spec conformance, security, dependencies, correctness, and style. Choose which cats sit, and external bot reviews fold into a single verdict.',
+      'Five reviewer cats read your PR or working diff, one lens each. The first checks the code against what the PR description promised and against SPEC.md; the rest cover security, dependencies, correctness, and style. Choose which cats sit, and external bot reviews fold into a single verdict.',
     longDescription:
-      'Five specialist reviewers read your pull request or working diff, each hunting one kind of problem, and their findings merge into a single verdict.',
+      'Five specialist reviewers read your pull request or working diff, each hunting one kind of problem, and their findings merge into a single verdict. The heaviest one reads intent before code: your PR description says what this change is for and what it is worth, your SPEC.md says what the product is, and the review is whether the diff actually delivered that.',
     highlights: [
       {
+        label: 'Holds the code to what the PR said it would do.',
+        body: 'It reads the description first, pulls out the goal and the value being claimed, then traces that claim through the diff. Not met, or claimed and missing, is blocking. An empty description is a finding too, and it drafts one for you.',
+      },
+      {
         label: 'Checks the change against your spec.',
-        body: 'The heaviest lens reads SPEC.md before the code, then flags anything the spec never promised and any feature that shipped without the spec being updated. That drift is exactly what ordinary code review misses.',
+        body: 'The heaviest lens reads SPEC.md before the code, then flags anything the spec never promised and any feature that shipped without the spec being updated. When the change contradicts a feature the spec still describes, it says so as a stale spec, with the sentence to change.',
       },
       {
         label: 'Reviews the spec itself, not just the code.',
@@ -283,8 +294,10 @@ export const skills: Skill[] = [
     tags: [
       'code-review',
       'pull-request',
+      'pr-description',
       'spec',
       'spec-conformance',
+      'product-intent',
       'security',
       'dependencies',
       'supply-chain',
@@ -301,8 +314,9 @@ export const skills: Skill[] = [
       [
         { id: 't', kind: 'trigger', label: '/cr', detail: 'A PR or your working diff' },
         { id: 'ctx', kind: 'context', label: 'Load diff', detail: 'Changed files + bot reviews' },
+        { id: 'desc', kind: 'context', label: 'Read the PR description', detail: 'The stated goal + the value claimed' },
         { id: 'spec', kind: 'context', label: 'Read the spec', detail: 'SPEC.md + what the diff did to it' },
-        { id: 'conf', kind: 'agent', label: '👻 Spec cat', detail: 'Intent, drift + spec gaps' },
+        { id: 'conf', kind: 'agent', label: '👻 Spec cat', detail: 'Goal met? drift + spec gaps' },
         { id: 'sec', kind: 'agent', label: '🐱 Security cat', detail: 'Vulns, secrets, authz' },
         { id: 'dep', kind: 'agent', label: '🐱 Supply-chain cat', detail: 'Deps + licenses' },
         { id: 'corr', kind: 'agent', label: '🐱 Correctness cat', detail: 'Bugs + concurrency' },
@@ -312,7 +326,8 @@ export const skills: Skill[] = [
       ],
       [
         { from: 't', to: 'ctx' },
-        { from: 'ctx', to: 'spec' },
+        { from: 'ctx', to: 'desc' },
+        { from: 'desc', to: 'spec' },
         { from: 'spec', to: 'conf' },
         { from: 'spec', to: 'sec' },
         { from: 'spec', to: 'dep' },

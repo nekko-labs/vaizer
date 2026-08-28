@@ -29,9 +29,9 @@ automatically.
 
 | Skill | Tier | Category | Description |
 |---|---|---|---|
-| [domain-finder](plugins/domain-finder) | Nekko official | research | Brainstorm startup/project names, check domain availability across TLDs via RDAP, and vet brand/trademark conflicts. |
-| [nyaa](plugins/nyaa) | Nekko official | engineering | Convene a council of four reviewer cats (security, deps/supply-chain, correctness/concurrency, style) over a PR or working diff, pulling in external bot reviews too. |
-| [resume-checker](plugins/resume-checker) | Nekko official | career | Check a resume against automated candidate-screening (ATS) signals and AI-centric job expectations, score it against specific jobs, then interactively apply fixes and show what changed. |
+| [domain-finder](plugins/vaizer/skills/domain-finder) | Nekko official | research | Brainstorm startup/project names, check domain availability across TLDs via RDAP, and vet brand/trademark conflicts. |
+| [nyaa](plugins/vaizer/skills/nyaa) | Nekko official | engineering | Convene a council of five reviewer cats over a PR or working diff: does the code deliver what the PR description promised and what SPEC.md says, plus security, deps/supply-chain, correctness/concurrency, and style. Pulls in external bot reviews too. |
+| [resume-checker](plugins/vaizer/skills/resume-checker) | Nekko official | career | Check a resume against automated candidate-screening (ATS) signals and AI-centric job expectations, score it against specific jobs, then interactively apply fixes and show what changed. |
 
 Trust tiers, as shown on the site:
 
