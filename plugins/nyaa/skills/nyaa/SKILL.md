@@ -24,8 +24,8 @@ whether the spec even defines the things it should. The other four cats judge th
 code on its own terms.
 
 The full checklist for each lens lives in `references/` next to this file
-(`tama.md`, `kuro.md`, `tora.md`, `mochi.md`, `shiro.md`). Read them for the deep
-version; the summaries below are enough for a quick pass.
+(`spectral.md`, `kuro.md`, `tora.md`, `mochi.md`, `shiro.md`). Read them for the
+deep version; the summaries below are enough for a quick pass.
 
 ## Step 1 — resolve the target
 
@@ -72,7 +72,7 @@ If none of those exist, fall back to the repo's agent guide (`AGENTS.md`,
 Note which of the three states applies (spec+code changed / code only / spec
 only), and carry the answer into the verdict header. If the repo has no spec of
 any kind, say so and skip to the council: do not infer intent from the diff and
-then grade the diff against it. Full detail in `references/tama.md`.
+then grade the diff against it. Full detail in `references/spectral.md`.
 
 ## Step 4 — convene the council over the diff
 
@@ -80,7 +80,7 @@ Get the diff (`gh pr diff {PR}` or `git diff`). Review it through **five
 independent lenses**. Read `references/*.md` for the full checklists; the short
 form:
 
-- **Tama 📜 — spec conformance & product intent** *(blocking for drift)*: read the
+- **Spectral 👻 — spec conformance & product intent** *(blocking for drift)*: read the
   spec (Step 3), then check the diff **both ways**. Code vs spec: does the
   implementation do what the spec says, at the stated scope, using the spec's own
   vocabulary, without scope creep or a feature marked shipped while half-built?

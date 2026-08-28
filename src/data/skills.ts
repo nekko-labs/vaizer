@@ -203,7 +203,7 @@ export const skills: Skill[] = [
         { id: 't', kind: 'trigger', label: '/cr', detail: 'A PR or your working diff' },
         { id: 'ctx', kind: 'context', label: 'Load diff', detail: 'Changed files + bot reviews' },
         { id: 'spec', kind: 'context', label: 'Read the spec', detail: 'SPEC.md + what the diff did to it' },
-        { id: 'conf', kind: 'agent', label: '🐱 Spec cat', detail: 'Intent, drift + spec gaps' },
+        { id: 'conf', kind: 'agent', label: '👻 Spec cat', detail: 'Intent, drift + spec gaps' },
         { id: 'sec', kind: 'agent', label: '🐱 Security cat', detail: 'Vulns, secrets, authz' },
         { id: 'dep', kind: 'agent', label: '🐱 Supply-chain cat', detail: 'Deps + licenses' },
         { id: 'corr', kind: 'agent', label: '🐱 Correctness cat', detail: 'Bugs + concurrency' },

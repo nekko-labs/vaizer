@@ -9,9 +9,9 @@ allowed-tools: Bash(gh:*), Bash(git:*), Bash(pnpm:*), Bash(npm:*), Read, Grep, G
 Convene **nyaa**, a council of reviewer cats, over a code change. This is
 the explicit trigger for the `nyaa` skill in this plugin — follow the
 skill's workflow. The five lens checklists are bundled at
-`${CLAUDE_PLUGIN_ROOT}/skills/nyaa/references/` (tama / kuro / tora / mochi /
-shiro). Tama is the primary lens: the change is reviewed against the project's
-`SPEC.md`, and the spec is reviewed too.
+`${CLAUDE_PLUGIN_ROOT}/skills/nyaa/references/` (spectral / kuro / tora / mochi
+/ shiro). Spectral is the primary lens: the change is reviewed against the
+project's `SPEC.md`, and the spec is reviewed too.
 
 Argument: `$ARGUMENTS` — a PR number, or empty.
 
@@ -60,14 +60,14 @@ If none of those exist, fall back to the repo's agent guide (`AGENTS.md`,
 Note which state applies (spec+code changed / code only / spec only) and carry it
 into the verdict header. If the repo has no spec of any kind, say so and skip to
 the council: do not infer intent from the diff and then grade the diff against
-it. Full detail in the bundled `references/tama.md`.
+it. Full detail in the bundled `references/spectral.md`.
 
 ## Step 4 — convene the council over the diff
 
 Get the diff (`gh pr diff {PR}` or `git diff`). Review it through **five
 independent lenses**. Read the bundled `references/*.md` for the full checklists:
 
-- **Tama 📜 — spec conformance & product intent** *(blocking for drift)*: check the
+- **Spectral 👻 — spec conformance & product intent** *(blocking for drift)*: check the
   diff against the spec **both ways**. Code vs spec: does it do what the spec
   says, at the stated scope, in the spec's vocabulary, no scope creep, nothing
   marked shipped while half-built? Spec vs code: a change to a feature, behavior,
