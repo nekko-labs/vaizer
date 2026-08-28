@@ -1,0 +1,10 @@
+{
+  "name": "vaizer",
+  "description": "The Nekko Labs skill collection: spec-conformance review (codereview-spec), a five-cat code-review council (nyaa), domain and brand research (domain-finder), and resume screening (resume-checker). Installing gives you all four, invoked as /vaizer:<skill>.",
+  "version": "1.0.0",
+  "author": { "name": "Nekko Labs", "url": "https://nekkolabs.com" },
+  "homepage": "https://vaizer.app/skills",
+  "repository": "https://github.com/nekko-labs/vaizer",
+  "license": "MIT",
+  "keywords": ["code-review", "spec", "spec-conformance", "pull-request", "security", "dependencies", "domains", "naming", "resume", "ats"]
+}

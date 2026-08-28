@@ -1,11 +1,11 @@
 ---
 name: codereview-spec
-description: Review a change against the project's spec, and review the spec itself. Two modes, auto-detected. Diff mode checks both directions, whether the code does what SPEC.md says (scope, vocabulary, no half-built feature marked shipped) and whether the spec was updated to record the change. Spec mode audits a SPEC.md / TASKS.md / PRD on its own for missing feature definitions, absent test expectations, undocumented folder structure and conventions, undefined data model, missing non-goals, contradictions, placeholders, and text an earlier merge already made stale. Use when the user asks whether a change matches the spec, wants spec drift or product-intent review, asks to review or audit a spec, or asks what the spec is missing. Trigger on "does this match the spec", "review this against SPEC.md", "did we update the spec", "spec drift", "review my spec", "what is missing from the spec", "audit the spec".
+description: Review a change against the project's spec, and review the spec itself. Point it at a GitHub pull request link, a PR number, a branch, your uncommitted work, or a spec file. Diff mode checks both directions, whether the code does what SPEC.md says (scope, vocabulary, no half-built feature marked shipped) and whether the spec was updated to record the change. Spec mode audits a SPEC.md / TASKS.md / PRD on its own for missing feature definitions, absent test expectations, undocumented folder structure and conventions, undefined data model, missing non-goals, contradictions, placeholders, and text an earlier merge already made stale. Use when the user asks whether a change matches the spec, pastes a PR link and asks about spec drift, wants product-intent review, or asks to review or audit a spec. Trigger on "does this match the spec", "review this PR against SPEC.md", "did we update the spec", "spec drift", "review my spec", "what is missing from the spec".
 license: MIT
 allowed-tools: Bash(gh:*) Bash(git:*) Read Grep Glob
 metadata:
   author: Nekko Labs
-  version: 1.0.0
+  version: 1.1.0
   category: engineering
   tags: code-review, spec, spec-conformance, product-intent, drift, documentation, pull-request
 ---
@@ -18,25 +18,56 @@ terms (correctness, security, and style reviewers do that). It asks whether this
 is the thing the spec said would be built, and when the spec turns out to say
 nothing at all, it says so rather than passing quietly.
 
-The deep checklist lives in `references/spec-review.md` next to this file. Read
-it for the full version; what follows is enough for a normal pass.
+The deep checklist lives in `references/spec-review.md` next to this file.
 
-## Pick the mode
+## Step 1: resolve the target
 
-Two modes, and the target decides which:
+Whatever the user pointed at, resolve it first. It decides both the mode and,
+more importantly, **which repository's spec you are allowed to read**.
 
-| The user pointed at | Mode | What it does |
+| Given | Resolve to | Mode |
 |---|---|---|
-| A PR, a branch, a diff, or nothing (working tree) | **diff** | Both directions: code vs spec, and spec vs code. Ends with a pass over the spec itself for gaps the diff exposed. |
-| A spec file (`SPEC.md`, `TASKS.md`, a PRD, a feature `prompt.md`) | **spec** | Audits that document on its own. No diff involved. |
+| A PR link, `https://github.com/{owner}/{repo}/pull/{n}` | That PR. Parse all three parts and pass `--repo {owner}/{repo}` to every `gh` call below. | diff |
+| A bare PR number, `#123` or `123` | That PR in the current repo | diff |
+| Nothing at all | The PR for the current branch (`gh pr view --json number,url`); if there is none, the working diff against the base branch | diff |
+| A branch name | `git diff origin/{base}...{branch}` | diff |
+| A path to a spec file (`SPEC.md`, `TASKS.md`, a PRD, `features/<name>/prompt.md`) | That document | spec |
 
-When it is genuinely ambiguous, say which you picked in one line and continue.
-Do not ask, and do not run both.
+```bash
+# A PR link: everything downstream needs the owner/repo, not just the number.
+gh pr view "$PR_URL" --json number,headRefOid,headRepository,baseRefName,url
+gh pr diff "$PR_URL"
 
-## Step 1: find the spec
+# A bare number in the current repo.
+gh repo view --json nameWithOwner -q .nameWithOwner
+```
 
-Look for these, in order. Stop at the first that exists, then also read any
-others that do:
+Say in one line which target and mode you resolved, then continue. Do not ask,
+and do not run both modes.
+
+### A PR link is not always this repository
+
+When the PR belongs to a repo other than your working directory, **the spec must
+come from that PR's repo**, at the PR's head commit. Grading someone else's
+change against whatever `SPEC.md` happens to be in your current checkout
+produces confident nonsense, and it is the easiest mistake to make here.
+
+```bash
+# Read a file from the PR's head, without cloning.
+gh api "repos/{owner}/{repo}/contents/SPEC.md?ref={head_sha}" --jq '.content' | base64 -d
+# What the PR itself changed in the spec. `gh pr diff` takes no pathspec, so
+# ask the API for the per-file patch:
+gh api "repos/{owner}/{repo}/pulls/{n}/files" --paginate \
+  --jq '.[] | select(.filename | test("^(SPEC|TASKS)\\.md$")) | "\(.filename)\n\(.patch)"' 
+```
+
+If the PR's repo has no readable spec, say so and stop. Never fall back to a
+local spec from a different project.
+
+## Step 2: find the spec
+
+In the repo the target belongs to, look for these in order. Stop at the first
+that exists, then also read any others that do:
 
 1. `SPEC.md` at the repo root: the source of truth (vision, users, journeys, features).
 2. `TASKS.md` / `PLAN.md`: the technical plan (stack, architecture, data model,
@@ -57,12 +88,18 @@ change cannot be reviewed against stated intent, and the repo should have a
 `SPEC.md`. Do **not** reverse-engineer intent from the code and then grade the
 code against it, that only launders the implementation into a spec.
 
-## Step 2 (diff mode): what did the change do to the spec?
+## Step 3 (diff mode): what did the change do to the spec?
 
 ```bash
-gh pr diff {PR} -- SPEC.md TASKS.md      # a PR
-git diff origin/main... -- SPEC.md TASKS.md   # a branch
-git diff -- SPEC.md TASKS.md              # uncommitted work
+# A PR. `gh pr diff` accepts no pathspec, so the per-file patch comes from the API.
+gh api "repos/{owner}/{repo}/pulls/{n}/files" --paginate \
+  --jq '.[] | select(.filename | test("^(SPEC|TASKS)\\.md$")) | "\(.filename)\n\(.patch)"'
+
+# Blast radius, for deciding whether a missing spec update is blocking:
+gh api "repos/{owner}/{repo}/pulls/{n}/files" --paginate --jq '.[].filename'
+
+git diff origin/main... -- SPEC.md TASKS.md     # a branch (git does take pathspecs)
+git diff -- SPEC.md TASKS.md                    # uncommitted work
 ```
 
 Three states, three verdicts:
@@ -79,7 +116,7 @@ Three states, three verdicts:
 Also check the task checklist: a shipped feature with no entry moved to Shipped,
 or a box ticked for work this diff does not actually finish.
 
-## Step 3 (diff mode): code vs product intent
+## Step 4 (diff mode): code vs product intent
 
 For every feature the diff touches:
 
@@ -97,7 +134,7 @@ For every feature the diff touches:
 - **Goals and boundaries.** Does the change work against a stated success
   criterion, non-goal, or scope boundary? Quote it.
 
-## Step 4: review the spec itself
+## Step 5: review the spec itself
 
 Runs in both modes. In diff mode it is scoped to what the diff touched; in spec
 mode it is the whole document.
@@ -127,10 +164,11 @@ thing the diff needed defined, that is feedback on the spec. Check it covers:
 Report these against `[SPEC.md § section]` with a fix that says what sentence to
 add.
 
-## Step 5: verdict
+## Step 6: verdict
 
 ```
 👻 codereview-spec · <diff|spec> mode · N findings (X blocking, Y informational)
+Target: <owner/repo#123 | branch | working diff | path/to/SPEC.md>
 Spec: <updated in this change / not updated (drift) / no spec file found>
 Read: SPEC.md, TASKS.md
 
@@ -149,8 +187,8 @@ Spec gaps
 
 Be terse: one line for the problem, one for the fix. Quote the spec whenever the
 finding is drift, so the reader sees both sides. Skip anything that is fine, and
-never write "the spec looks good overall". The `Spec:` line is always present.
-Omit a section that has no findings. If everything is clean:
+never write "the spec looks good overall". The `Target:` and `Spec:` lines are
+always present. Omit a section that has no findings. If everything is clean:
 `👻 codereview-spec · no findings.`
 
 ## Note

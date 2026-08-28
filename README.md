@@ -21,7 +21,7 @@ automatically.
 /plugin marketplace add nekko-labs/vaizer
 
 # Install a skill
-/plugin install domain-finder@vaizer
+/plugin install vaizer@vaizer
 
 # Later, pull updates
 /plugin marketplace update vaizer

@@ -153,8 +153,8 @@ export const skills: Skill[] = [
     source: 'nekko-official',
     author: 'Nekko Labs',
     sourceUrl:
-      'https://github.com/nekko-labs/vaizer/tree/main/plugins/domain-finder',
-    installCommand: '/plugin install domain-finder@vaizer',
+      'https://github.com/nekko-labs/vaizer/tree/main/plugins/vaizer/skills/domain-finder',
+    installCommand: '/plugin install vaizer@vaizer',
     beginnerFriendly: true,
     featured: true,
     workflow: wf(
@@ -219,8 +219,8 @@ export const skills: Skill[] = [
     source: 'nekko-official',
     author: 'Nekko Labs',
     sourceUrl:
-      'https://github.com/nekko-labs/vaizer/tree/main/plugins/codereview-spec',
-    installCommand: '/plugin install codereview-spec@vaizer',
+      'https://github.com/nekko-labs/vaizer/tree/main/plugins/vaizer/skills/codereview-spec',
+    installCommand: '/plugin install vaizer@vaizer',
     beginnerFriendly: true,
     workflow: wf(
       [
@@ -294,8 +294,8 @@ export const skills: Skill[] = [
     source: 'nekko-official',
     author: 'Nekko Labs',
     sourceUrl:
-      'https://github.com/nekko-labs/vaizer/tree/main/plugins/nyaa',
-    installCommand: '/plugin install nyaa@vaizer',
+      'https://github.com/nekko-labs/vaizer/tree/main/plugins/vaizer/skills/nyaa',
+    installCommand: '/plugin install vaizer@vaizer',
     featured: true,
     workflow: wf(
       [
@@ -340,8 +340,8 @@ export const skills: Skill[] = [
     source: 'nekko-official',
     author: 'Nekko Labs',
     sourceUrl:
-      'https://github.com/nekko-labs/vaizer/tree/main/plugins/resume-checker',
-    installCommand: '/plugin install resume-checker@vaizer',
+      'https://github.com/nekko-labs/vaizer/tree/main/plugins/vaizer/skills/resume-checker',
+    installCommand: '/plugin install vaizer@vaizer',
     beginnerFriendly: true,
     featured: true,
     workflow: wf(
