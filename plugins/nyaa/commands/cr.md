@@ -1,6 +1,6 @@
 ---
 description: nyaa — summon the council of reviewer cats over a PR or the working diff (checks it against the spec; pulls in external bot reviews too)
-argument-hint: "[PR number | empty for current branch / working diff]"
+argument-hint: "[PR number] [--cats a,b | --skip c | --pick]"
 allowed-tools: Bash(gh:*), Bash(git:*), Bash(pnpm:*), Bash(npm:*), Read, Grep, Glob
 ---
 
@@ -13,7 +13,30 @@ skill's workflow. The five lens checklists are bundled at
 / shiro). Spectral is the primary lens: the change is reviewed against the
 project's `SPEC.md`, and the spec is reviewed too.
 
-Argument: `$ARGUMENTS` — a PR number, or empty.
+Argument: `$ARGUMENTS` accepts a PR number (empty means the current branch or
+working diff), optionally followed by a council selection.
+
+## Choosing the council
+
+All five cats sit by default. Convene a narrower council only when asked:
+
+| Cat | Lens | Key |
+|---|---|---|
+| Spectral 👻 | spec conformance & product intent | `spectral` |
+| Kuro 🖤 | security & data safety | `kuro` |
+| Tora 🐅 | dependencies & supply chain | `tora` |
+| Mochi 🍡 | correctness & concurrency | `mochi` |
+| Shiro 🤍 | style & consistency | `shiro` |
+
+- `/cr 42 --cats spectral,kuro` convenes only those two.
+- `/cr --skip tora` convenes everyone except Tora.
+- `/cr --pick` asks first: show the roster as a multi-select with every cat
+  checked, let the user uncheck, then convene what is left.
+- Plain language works too ("only the security one", "skip deps").
+
+An empty council is not a review: say so and stop. An unrecognised key lists the
+valid keys rather than silently doing nothing. Selection changes who reviews,
+never how strictly. Always name the council that sat in the verdict header.
 
 ## Step 1 — resolve the target
 
@@ -64,8 +87,8 @@ it. Full detail in the bundled `references/spectral.md`.
 
 ## Step 4 — convene the council over the diff
 
-Get the diff (`gh pr diff {PR}` or `git diff`). Review it through **five
-independent lenses**. Read the bundled `references/*.md` for the full checklists:
+Get the diff (`gh pr diff {PR}` or `git diff`). Review it through the
+**independent lenses of the cats you convened** (all five unless narrowed). Read the bundled `references/*.md` for the full checklists:
 
 - **Spectral 👻 — spec conformance & product intent** *(blocking for drift)*: check the
   diff against the spec **both ways**. Code vs spec: does it do what the spec
@@ -101,6 +124,7 @@ Merge external findings + council findings. De-dupe. Output:
 
 ```
 🐈‍⬛ nyaa — N issues (X blocking, Y informational)
+Council: <all five / spectral, kuro (3 sat out)>
 External bots: <Codex verdict / skipped / none>
 Spec: <updated in this change / not updated (drift) / no spec file found>
 

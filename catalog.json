@@ -32,15 +32,37 @@
       "sourceUrl": "https://github.com/nekko-labs/vaizer/tree/main/plugins/resume-checker"
     },
     {
+      "id": "codereview-spec",
+      "name": "codereview-spec",
+      "slug": "codereview-spec",
+      "tier": "nekko-official",
+      "category": "engineering",
+      "description": "Reviews a change against your spec, and reviews the spec itself. Catches code the spec never promised, features shipped without a spec update, and the gaps in the spec that let them through.",
+      "tags": [
+        "code-review",
+        "spec",
+        "spec-conformance",
+        "product-intent",
+        "drift",
+        "documentation",
+        "pull-request"
+      ],
+      "author": "Nekko Labs",
+      "version": "1.0.0",
+      "license": "MIT",
+      "installCommand": "/plugin install codereview-spec@vaizer",
+      "sourceUrl": "https://github.com/nekko-labs/vaizer/tree/main/plugins/codereview-spec"
+    },
+    {
       "id": "nyaa",
       "name": "nyaa",
       "slug": "nyaa",
       "tier": "nekko-official",
       "category": "engineering",
-      "description": "Convene a council of five reviewer cats (spec conformance, security, deps/supply-chain, correctness/concurrency, style) over a PR or working diff: the change is reviewed against SPEC.md, and gaps in the spec itself are reported too. Pulls in external bot reviews as well.",
+      "description": "Five reviewer cats read your PR or working diff, one lens each: spec conformance, security, dependencies, correctness, and style. Choose which cats sit, and external bot reviews fold into a single verdict.",
       "tags": ["code-review", "pull-request", "spec", "spec-conformance", "security", "dependencies", "supply-chain", "concurrency", "lint"],
       "author": "Nekko Labs",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "license": "MIT",
       "installCommand": "/plugin install nyaa@vaizer",
       "sourceUrl": "https://github.com/nekko-labs/vaizer/tree/main/plugins/nyaa"

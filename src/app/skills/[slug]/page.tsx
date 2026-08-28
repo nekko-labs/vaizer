@@ -139,6 +139,19 @@ export default async function SkillDetailPage({ params }: { params: Promise<Para
         <p className="mt-1 text-sm text-muted">by {skill.author}</p>
         <p className="mt-4 text-lg text-muted">{skill.longDescription ?? skill.description}</p>
 
+        {skill.highlights && skill.highlights.length > 0 && (
+          <ul className="mt-5 space-y-2.5">
+            {skill.highlights.map((h) => (
+              <li key={h.label} className="flex gap-2.5 text-muted">
+                <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                <span>
+                  <strong className="font-semibold text-fg">{h.label}</strong> {h.body}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+
         {skill.tags.length > 0 && (
           <ul className="mt-5 flex flex-wrap gap-2">
             {skill.tags.map((tag) => (

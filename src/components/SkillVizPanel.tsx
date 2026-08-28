@@ -97,6 +97,19 @@ function CatalogViz({ skill, voteCount }: { skill: Skill; voteCount: number }) {
 
       <p className="mt-4 text-muted">{skill.longDescription ?? skill.description}</p>
 
+      {skill.highlights && skill.highlights.length > 0 && (
+        <ul className="mt-4 space-y-2">
+          {skill.highlights.map((h) => (
+            <li key={h.label} className="flex gap-2.5 text-sm text-muted">
+              <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+              <span>
+                <strong className="font-semibold text-fg">{h.label}</strong> {h.body}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+
       {skill.tags.length > 0 && (
         <ul className="mt-4 flex flex-wrap gap-2">
           {skill.tags.map((tag) => (

@@ -1,11 +1,11 @@
 ---
 name: nyaa
-description: Convene a council of five independent reviewer cats over a code change and merge their findings into one verdict. The primary lens checks the diff against the project's spec (SPEC.md / TASKS.md) for product-intent drift, features shipped without a spec entry, and gaps in the spec itself (missing feature definitions, test expectations, folder structure, conventions); the others cover security, dependencies / supply chain, correctness / concurrency, and style / lint. Use when the user wants to review a pull request or the working diff, asks for a code review, wants a second opinion before merging/shipping, or wants spec-conformance / security / dependency / supply-chain / concurrency / correctness / style review of a diff. Also pulls in external bot reviews (Codex, Dependabot) for the PR. Trigger on "review this PR", "review my diff", "code review", "does this match the spec", "look over this change before I ship".
+description: Convene a council of five independent reviewer cats over a code change and merge their findings into one verdict. The primary lens checks the diff against the project's spec (SPEC.md / TASKS.md) for product-intent drift, features shipped without a spec entry, and gaps in the spec itself; the others cover security, dependencies / supply chain, correctness / concurrency, and style / lint. All five sit by default and the council is selectable (--cats / --skip / --pick). Also pulls in external bot reviews (Codex, Dependabot). Use when the user wants a pull request or working diff reviewed, asks for a code review or a second opinion before merging, or wants spec-conformance, security, dependency, concurrency, or style review. Trigger on "review this PR", "review my diff", "code review", "does this match the spec", "look over this before I ship", "review just the security", "skip the dependency check", "let me pick which reviewers run".
 license: MIT
 allowed-tools: Bash(gh:*) Bash(git:*) Bash(pnpm:*) Bash(npm:*) Bash(yarn:*) Bash(cargo:*) Bash(ruff:*) Read Grep Glob
 metadata:
   author: Nekko Labs
-  version: 1.1.0
+  version: 1.2.0
   category: engineering
   tags: code-review, pull-request, spec, spec-conformance, security, dependencies, supply-chain, concurrency, lint
 ---
@@ -26,6 +26,40 @@ code on its own terms.
 The full checklist for each lens lives in `references/` next to this file
 (`spectral.md`, `kuro.md`, `tora.md`, `mochi.md`, `shiro.md`). Read them for the
 deep version; the summaries below are enough for a quick pass.
+
+## Choosing the council
+
+By default **all five cats sit**. Run the full council unless the user asks for
+something narrower; do not prompt on every invocation.
+
+| Cat | Lens | Key |
+|---|---|---|
+| Spectral 👻 | spec conformance & product intent | `spectral` |
+| Kuro 🖤 | security & data safety | `kuro` |
+| Tora 🐅 | dependencies & supply chain | `tora` |
+| Mochi 🍡 | correctness & concurrency | `mochi` |
+| Shiro 🤍 | style & consistency | `shiro` |
+
+Honour a selection when the user gives one, in any of these forms:
+
+- `--cats spectral,kuro` convenes only those.
+- `--skip tora` convenes everyone except those.
+- `--pick` (or `--interactive`) asks first: present the roster as a multi-select
+  with every cat already checked, let the user uncheck the ones they don't want,
+  then convene what is left.
+- Plain language: "only the security and correctness cats", "skip the dependency
+  one", "just check it against the spec". The key, the cat's name, the lens name,
+  and the emoji all resolve to the same cat.
+
+Rules:
+
+- An empty council is not a review. If every cat would be skipped, say so and
+  stop rather than emitting a clean verdict.
+- An unrecognised key is not a silent no-op. List the valid keys and ask.
+- Selection changes **who reviews, never how strictly**. A cat that sits still
+  blocks on its own blocking findings.
+- **Always name the council that sat in the verdict header.** A two-cat pass must
+  never be mistakable for a clean five-cat review.
 
 ## Step 1 — resolve the target
 
@@ -76,8 +110,9 @@ then grade the diff against it. Full detail in `references/spectral.md`.
 
 ## Step 4 — convene the council over the diff
 
-Get the diff (`gh pr diff {PR}` or `git diff`). Review it through **five
-independent lenses**. Read `references/*.md` for the full checklists; the short
+Get the diff (`gh pr diff {PR}` or `git diff`). Review it through the
+**independent lenses of the cats you convened** (all five unless the user
+narrowed the council). Read `references/*.md` for the full checklists; the short
 form:
 
 - **Spectral 👻 — spec conformance & product intent** *(blocking for drift)*: read the
@@ -122,6 +157,7 @@ Merge external findings + council findings. De-dupe. Output:
 
 ```
 🐈‍⬛ nyaa — N issues (X blocking, Y informational)
+Council: <all five / spectral, kuro (3 sat out)>
 External bots: <Codex verdict / skipped / none>
 Spec: <updated in this change / not updated (drift) / no spec file found>
 
@@ -140,6 +176,7 @@ Spec gaps
 
 Tag each finding with the cat that raised it. Be terse — one line problem, one
 line fix. Cite `file:line`. Only flag real problems; if a lens is clean, omit it.
-The `Spec:` line is always present, even when clean; omit the `Spec gaps` section
-when the spec is complete for what the diff touches.
+The `Council:` line is always present. The `Spec:` line is present whenever
+Spectral sat; omit both it and the `Spec gaps` section when Spectral sat out, and
+omit `Spec gaps` alone when the spec is complete for what the diff touches.
 If nothing: `🐈‍⬛ nyaa — no issues found. nyaa~`
