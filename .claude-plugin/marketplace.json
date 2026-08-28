@@ -1,55 +1,39 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "vaizer",
-  "owner": { "name": "Nekko Labs", "url": "https://nekkolabs.com" },
+  "owner": {
+    "name": "Nekko Labs",
+    "url": "https://nekkolabs.com"
+  },
   "metadata": {
     "description": "Agent Skills marketplace by Nekko Labs: official and community-contributed Claude skills. Browse them with a workflow graph each at https://vaizer.app/skills",
     "pluginRoot": "./plugins"
   },
   "plugins": [
     {
-      "name": "domain-finder",
-      "source": "./plugins/domain-finder",
-      "description": "Brainstorm startup/project names, check domain availability across TLDs via RDAP, and vet brand/trademark conflicts.",
+      "name": "vaizer",
+      "source": "./plugins/vaizer",
+      "description": "The Nekko Labs skill collection, installed as one plugin: codereview-spec (spec conformance), nyaa (a five-cat review council), domain-finder (naming and domain availability), and resume-checker (ATS and AI-role screening). Each is invoked as /vaizer:<skill>.",
       "version": "1.0.0",
-      "author": { "name": "Nekko Labs", "url": "https://nekkolabs.com" },
-      "homepage": "https://vaizer.app/skills/domain-finder",
-      "license": "MIT",
-      "category": "research",
-      "keywords": ["domains", "naming", "branding", "rdap", "startup", "trademark"]
-    },
-    {
-      "name": "resume-checker",
-      "source": "./plugins/resume-checker",
-      "description": "Check a resume against automated candidate-screening (ATS) signals and AI-centric job expectations, score it against specific job postings, then interactively apply fixes and show exactly what changed.",
-      "version": "1.0.0",
-      "author": { "name": "Nekko Labs", "url": "https://nekkolabs.com" },
-      "homepage": "https://vaizer.app/skills/resume-checker",
-      "license": "MIT",
-      "category": "career",
-      "keywords": ["resume", "cv", "ats", "job-hunt", "career", "screening", "ai-roles"]
-    },
-    {
-      "name": "codereview-spec",
-      "source": "./plugins/codereview-spec",
-      "description": "Reviews a change against your spec, and reviews the spec itself. Catches code the spec never promised, features shipped without a spec update, and the gaps in the spec that let them through.",
-      "version": "1.1.0",
-      "author": { "name": "Nekko Labs", "url": "https://nekkolabs.com" },
-      "homepage": "https://vaizer.app/skills/codereview-spec",
+      "author": {
+        "name": "Nekko Labs",
+        "url": "https://nekkolabs.com"
+      },
+      "homepage": "https://vaizer.app/skills",
       "license": "MIT",
       "category": "engineering",
-      "keywords": ["code-review", "spec", "spec-conformance", "product-intent", "drift", "documentation", "pull-request"]
-    },
-    {
-      "name": "nyaa",
-      "source": "./plugins/nyaa",
-      "description": "Five reviewer cats read your PR or working diff, one lens each: spec conformance, security, dependencies, correctness, and style. Choose which cats sit, and external bot reviews fold into a single verdict.",
-      "version": "1.2.1",
-      "author": { "name": "Nekko Labs", "url": "https://nekkolabs.com" },
-      "homepage": "https://vaizer.app/skills/nyaa",
-      "license": "MIT",
-      "category": "engineering",
-      "keywords": ["code-review", "pull-request", "spec", "spec-conformance", "security", "dependencies", "supply-chain", "concurrency", "lint"]
+      "keywords": [
+        "code-review",
+        "spec",
+        "spec-conformance",
+        "pull-request",
+        "security",
+        "dependencies",
+        "domains",
+        "naming",
+        "resume",
+        "ats"
+      ]
     }
   ]
 }
