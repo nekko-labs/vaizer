@@ -34,7 +34,8 @@ What did this change do to the spec?
 
 ```bash
 # PR
-gh pr diff {PR} -- SPEC.md TASKS.md
+gh api "repos/{owner}/{repo}/pulls/{PR}/files" --paginate \
+  --jq '.[] | select(.filename | test("^(SPEC|TASKS)\\.md$")) | "\(.filename)\n\(.patch)"' 
 # or working diff
 git diff origin/main... -- SPEC.md TASKS.md
 ```

@@ -74,7 +74,11 @@ The spec is the yardstick, so read it first, unprimed by the implementation.
 
 ```bash
 git ls-files 'SPEC.md' 'TASKS.md' 'PRD.md' 'docs/spec*' 'ARCHITECTURE.md'
-gh pr diff {PR} -- SPEC.md TASKS.md    # or: git diff origin/main... -- SPEC.md TASKS.md
+# `gh pr diff` takes no pathspec, so the spec's patch comes from the API:
+gh api "repos/{owner}/{repo}/pulls/{PR}/files" --paginate \
+  --jq '.[] | select(.filename | test("^(SPEC|TASKS)\\.md$")) | "\(.filename)\n\(.patch)"'
+# Working diff instead: git does take pathspecs.
+git diff origin/main... -- SPEC.md TASKS.md
 ```
 
 If none of those exist, fall back to the repo's agent guide (`AGENTS.md`,

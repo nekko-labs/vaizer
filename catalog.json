@@ -48,7 +48,7 @@
         "pull-request"
       ],
       "author": "Nekko Labs",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "license": "MIT",
       "installCommand": "/plugin install codereview-spec@vaizer",
       "sourceUrl": "https://github.com/nekko-labs/vaizer/tree/main/plugins/codereview-spec"
@@ -62,7 +62,7 @@
       "description": "Five reviewer cats read your PR or working diff, one lens each: spec conformance, security, dependencies, correctness, and style. Choose which cats sit, and external bot reviews fold into a single verdict.",
       "tags": ["code-review", "pull-request", "spec", "spec-conformance", "security", "dependencies", "supply-chain", "concurrency", "lint"],
       "author": "Nekko Labs",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "license": "MIT",
       "installCommand": "/plugin install nyaa@vaizer",
       "sourceUrl": "https://github.com/nekko-labs/vaizer/tree/main/plugins/nyaa"

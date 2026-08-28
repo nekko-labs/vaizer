@@ -127,6 +127,9 @@ The standalone form of nyaa's Spectral lens, published as its own skill for peop
 - Refuses to reverse-engineer intent: with no spec of any kind it reports that as the finding rather than inferring intent from the code and grading the code against it `[shipped]`
 - Deep checklist bundled as `references/spec-review.md`, covering what counts as blocking, the drift cases that are not drift, and how to judge each of the three spec/code states `[shipped]`
 - Shares its checklist with nyaa's Spectral lens by design; the two are kept in step `[shipped]`
+- Takes a **GitHub pull request link** as its target, as well as a PR number, a branch, the working diff, or a path to a spec document; the resolved target and mode are stated in one line and echoed in the verdict header `[shipped]`
+- When the PR belongs to a different repository than the working directory, the spec is read from **that PR's repo at its head commit**, never from the local checkout, and the review stops rather than substituting an unrelated spec `[shipped]`
+- Ships a short `/spec` command alongside the skill, so the council-style plugin namespace reads `/codereview-spec:spec` rather than repeating the plugin name `[shipped]`
 
 ### Skills: break down any public skill (folded into search)
 Point Vaizer at *any* public skill and get the same workflow breakdown, even if it isn't in our catalog. This is no longer a separate page: it is the URL-paste path of the unified search (the old `/skills/inspect` route redirects to `/skills`). *Why:* the visualizer is only as useful as the set of skills it can read; opening it to all public skills (e.g. Anthropic's official ones) makes it a general tool.
