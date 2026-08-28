@@ -267,7 +267,7 @@ function Toggle({ on, onChange, label }: { on: boolean; onChange: () => void; la
       }`}
     >
       <span
-        className={`absolute top-0.5 h-[18px] w-[18px] rounded-full bg-surface-2 shadow transition-transform ${
+        className={`absolute left-0 top-0.5 h-[18px] w-[18px] rounded-full bg-surface-2 shadow transition-transform ${
           on ? 'translate-x-[22px] border border-accent-fg/20' : 'translate-x-0.5 border border-border'
         }`}
       />

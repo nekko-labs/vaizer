@@ -322,7 +322,8 @@ function HeroGraph() {
         backgroundSize: '16px 16px',
       }}
     >
-      <svg viewBox="0 0 516 156" className="h-auto w-full">
+      {/* Height leaves room for the loop-back curve, which dips ~21px below the bottom node row. */}
+      <svg viewBox="0 0 516 172" className="h-auto w-full">
         <defs>
           <marker id="hero-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <path d="M0 0 L10 5 L0 10 z" fill="var(--muted)" />
