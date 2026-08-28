@@ -77,8 +77,12 @@ export type Skill = {
   slug: string;
   /** One-line summary used on cards and as the meta description. */
   description: string;
-  /** Longer prose for the detail page (optional). */
+  /** Lead paragraph for the detail page, and the page's meta description. Keep
+   * it to a sentence or two; the scannable detail belongs in `highlights`. */
   longDescription?: string;
+  /** Scannable bullets for the detail page: what the skill does, and why that
+   * helps. Rendered as a list under the lead paragraph. */
+  highlights?: { label: string; body: string }[];
   category: SkillCategory;
   tags: string[];
   source: SkillSource;
@@ -173,13 +177,108 @@ export const skills: Skill[] = [
     ),
   },
   {
+    id: 'codereview-spec',
+    name: 'codereview-spec',
+    slug: 'codereview-spec',
+    description:
+      "Reviews a change against your spec, and reviews the spec itself. Catches code the spec never promised, features shipped without a spec update, and the gaps in the spec that let them through.",
+    longDescription:
+      'The spec review on its own: does the code do what the project said it would, and does the spec still describe reality?',
+    highlights: [
+      {
+        label: 'Two modes, nothing to remember.',
+        body: 'Point it at a pull request or diff and it reviews the code against the spec. Point it at a SPEC.md, TASKS.md, or PRD and it reviews that document instead. The target picks the mode.',
+      },
+      {
+        label: 'Catches drift in both directions.',
+        body: 'Code doing what the spec never promised, and changes that shipped while the spec still describes the old behaviour. It blocks on real feature changes and stays quiet for refactors.',
+      },
+      {
+        label: 'Tells you what the spec is missing.',
+        body: 'Undefined features, no test expectation, no documented home for new files, missing non-goals, and text an earlier merge already made false. Every gap arrives with the sentence to add.',
+      },
+      {
+        label: 'Will not invent a spec to grade you against.',
+        body: 'With no spec at all it says so plainly, rather than inferring intent from your code and then declaring your code correct.',
+      },
+      {
+        label: 'The council lens, standalone.',
+        body: 'This is nyaa\'s spec reviewer on its own, for repos that want the spec question answered without the other four reviewers.',
+      },
+    ],
+    category: 'coding',
+    tags: [
+      'code-review',
+      'spec',
+      'spec-conformance',
+      'product-intent',
+      'drift',
+      'documentation',
+      'pull-request',
+    ],
+    source: 'nekko-official',
+    author: 'Nekko Labs',
+    sourceUrl:
+      'https://github.com/nekko-labs/vaizer/tree/main/plugins/codereview-spec',
+    installCommand: '/plugin install codereview-spec@vaizer',
+    beginnerFriendly: true,
+    workflow: wf(
+      [
+        { id: 't', kind: 'trigger', label: '/codereview-spec', detail: 'A PR, a diff, or a spec file' },
+        { id: 'find', kind: 'context', label: 'Find the spec', detail: 'SPEC.md, TASKS.md, PRD, AGENTS.md' },
+        { id: 'mode', kind: 'decision', label: 'Diff or spec?', detail: 'The target picks the mode' },
+        { id: 'delta', kind: 'context', label: 'Read the spec diff', detail: 'What the change did to it' },
+        { id: 'intent', kind: 'agent', label: 'Code vs intent', detail: 'Drift, scope creep, vocabulary' },
+        { id: 'audit', kind: 'agent', label: 'Audit the spec', detail: 'Gaps, contradictions, staleness' },
+        { id: 'merge', kind: 'agent', label: 'Rank findings', detail: 'Blocking vs informational' },
+        { id: 'out', kind: 'output', label: 'Spec verdict' },
+      ],
+      [
+        { from: 't', to: 'find' },
+        { from: 'find', to: 'mode' },
+        { from: 'mode', to: 'delta', label: 'diff' },
+        { from: 'mode', to: 'audit', label: 'spec' },
+        { from: 'delta', to: 'intent' },
+        { from: 'intent', to: 'audit' },
+        { from: 'audit', to: 'merge' },
+        { from: 'merge', to: 'out' },
+      ],
+    ),
+  },
+  {
     id: 'nyaa',
     name: 'nyaa',
     slug: 'nyaa',
     description:
-      'Convene a council of five reviewer cats (spec conformance, security, deps/supply-chain, correctness/concurrency, style) over a PR or working diff: the change is reviewed against SPEC.md, and gaps in the spec itself are reported too. Pulls in external bot reviews as well.',
+      'Five reviewer cats read your PR or working diff, one lens each: spec conformance, security, dependencies, correctness, and style. Choose which cats sit, and external bot reviews fold into a single verdict.',
     longDescription:
-      'A code-review skill that summons a council of five specialist reviewer “cats”, each with a distinct lens. The first and heaviest is spec conformance: it reads the project’s SPEC.md before the diff, then checks both directions, whether the code does what the spec says (scope, vocabulary, no half-built feature marked shipped) and whether the spec was updated to record the change. It reviews the spec itself too, so missing feature definitions, absent test expectations, undocumented folder structure and conventions come back as findings rather than silent assumptions. The other four cats cover security, dependencies and supply-chain, correctness and concurrency, and style plus lint. Point it at a GitHub pull request or your uncommitted working diff and it produces one consolidated verdict, folding in any external bot reviews (e.g. Codex) already posted on the PR. Ships a `/cr` command so you can summon the council in one line.',
+      'Five specialist reviewers read your pull request or working diff, each hunting one kind of problem, and their findings merge into a single verdict.',
+    highlights: [
+      {
+        label: 'Checks the change against your spec.',
+        body: 'The heaviest lens reads SPEC.md before the code, then flags anything the spec never promised and any feature that shipped without the spec being updated. That drift is exactly what ordinary code review misses.',
+      },
+      {
+        label: 'Reviews the spec itself, not just the code.',
+        body: 'Missing feature definitions, no stated test expectation, undocumented conventions. Each gap comes back with the sentence to add, so the spec improves instead of just being blamed.',
+      },
+      {
+        label: 'Four more lenses, one concern each.',
+        body: 'Security, dependencies and supply chain, correctness and concurrency, style and lint. One reviewer per concern stays sharper than one reviewer for everything.',
+      },
+      {
+        label: 'Runs your real tools, not just the diff text.',
+        body: 'The dependency cat runs your audit; the style cat runs your linter and separates failures this change caused from ones that were already there.',
+      },
+      {
+        label: 'You choose who reviews.',
+        body: 'All five sit by default. Narrow the council with --cats, --skip, or --pick for an interactive roster. The verdict always names who sat, so a partial pass can never read as a clean one.',
+      },
+      {
+        label: 'Folds in the bots you already run.',
+        body: 'Codex and Dependabot findings are pulled in and cited, including when Codex skipped the PR, which is precisely when you need to know nothing else reviewed it.',
+      },
+    ],
     category: 'coding',
     tags: [
       'code-review',

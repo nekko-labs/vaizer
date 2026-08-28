@@ -116,6 +116,17 @@ A code-review skill published to the marketplace: five reviewer "cats" each read
 - Four supporting lenses: security and data safety, dependencies and supply chain (runs the audit, not just the diff text), correctness and concurrency, style and consistency (runs the project linter and attributes failures to changed vs untouched files) `[shipped]`
 - One consolidated, de-duped verdict: blocking / informational / spec gaps, every finding tagged with the cat that raised it and a one-line spec state in the header `[shipped]`
 - Ships a `/cr` command as the explicit trigger, with the per-lens checklists bundled as `references/` so each lens can be read in full on demand `[shipped]`
+- **The council is selectable** (added 2026-08-28): all five cats sit by default, and a narrower council can be convened by key (`--cats spectral,kuro`), by exclusion (`--skip tora`), interactively (`--pick` shows the roster as a multi-select with every cat checked), or in plain language. An empty council refuses to review rather than returning a clean verdict, and the council that sat is always named in the header so a partial pass cannot read as a full one `[shipped]`
+
+### Skills: codereview-spec (Nekko-official skill)
+The standalone form of nyaa's Spectral lens, published as its own skill for people who want the spec question without the rest of the council. *Why:* spec conformance is the lens with the widest audience, it is the one that applies to a repo with no interest in a five-cat review, and it is the only reviewer that can be pointed at a spec document rather than a diff. Extracting it also gives the checklist a home that is not conditional on installing nyaa. `[shipped]`
+
+- Two modes, chosen from the target rather than a flag: a PR / branch / working diff runs **diff mode**, a `SPEC.md` / `TASKS.md` / PRD / feature document runs **spec mode** `[shipped]`
+- Diff mode checks both directions: code against stated intent (scope, vocabulary, completeness, scope creep, stated non-goals), and the spec against the change (an unrecorded feature, behavior, route, interface, or data-shape change is blocking; refactor / build / test-only is informational) `[shipped]`
+- Spec mode audits the document on its own: missing feature definitions, absent test expectations, undocumented folder structure and conventions, undefined data model and interfaces, missing non-goals, placeholders, internal contradictions, and text an earlier merge already made stale `[shipped]`
+- Refuses to reverse-engineer intent: with no spec of any kind it reports that as the finding rather than inferring intent from the code and grading the code against it `[shipped]`
+- Deep checklist bundled as `references/spec-review.md`, covering what counts as blocking, the drift cases that are not drift, and how to judge each of the three spec/code states `[shipped]`
+- Shares its checklist with nyaa's Spectral lens by design; the two are kept in step `[shipped]`
 
 ### Skills: break down any public skill (folded into search)
 Point Vaizer at *any* public skill and get the same workflow breakdown, even if it isn't in our catalog. This is no longer a separate page: it is the URL-paste path of the unified search (the old `/skills/inspect` route redirects to `/skills`). *Why:* the visualizer is only as useful as the set of skills it can read; opening it to all public skills (e.g. Anthropic's official ones) makes it a general tool.
