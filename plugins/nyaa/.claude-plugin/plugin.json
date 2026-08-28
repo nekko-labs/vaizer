@@ -1,10 +1,10 @@
 {
   "name": "nyaa",
-  "description": "Convene a council of four reviewer cats (security, deps/supply-chain, correctness/concurrency, style) over a PR or working diff, pulling in external bot reviews too.",
-  "version": "1.0.0",
+  "description": "Convene a council of five reviewer cats (spec conformance, security, deps/supply-chain, correctness/concurrency, style) over a PR or working diff: the change is reviewed against SPEC.md, and gaps in the spec itself are reported too. Pulls in external bot reviews as well.",
+  "version": "1.1.0",
   "author": { "name": "Nekko Labs", "url": "https://nekkolabs.com" },
   "homepage": "https://vaizer.app/skills/nyaa",
   "repository": "https://github.com/nekko-labs/vaizer",
   "license": "MIT",
-  "keywords": ["code-review", "pull-request", "security", "dependencies", "supply-chain", "concurrency", "lint"]
+  "keywords": ["code-review", "pull-request", "spec", "spec-conformance", "security", "dependencies", "supply-chain", "concurrency", "lint"]
 }
