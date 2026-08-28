@@ -106,6 +106,17 @@ A job-hunt skill authored by Nekko Labs, published to the marketplace (`nekko-la
 - Interactive fix loop: the skill proposes changes and the user accepts all or only some of them `[shipped]`
 - Produces the updated resume and highlights exactly what changed, e.g. a rendered screenshot of the resume with an overlay marking the edits `[shipped]`
 
+### Skills: nyaa (Nekko-official skill)
+A code-review skill published to the marketplace: five reviewer "cats" each read a change through one sharp lens, then their findings merge into a single verdict. *Why:* one monolithic reviewer blurs the lenses together and tends to skip the question that matters most, whether the change is actually the thing the project said it was building. Naming each lens keeps each pass sharp, and pinning the heaviest lens to the repo's own `SPEC.md` makes the spec the yardstick instead of the reviewer's taste. `[shipped]`
+
+- Target resolution: a PR number, the PR for the current branch, or the uncommitted working diff `[shipped]`
+- External bot reviews are pulled in first and cited (Codex issue comments, inline review comments, review verdicts), including the case where Codex skipped the PR and the council is the only safety net `[shipped]`
+- **Spec conformance is the primary lens** (Tama 📜, added 2026-08-28): the spec is read before the diff, then the change is checked both ways. Code against stated intent (scope, vocabulary, nothing marked shipped while half-built), and spec against the change (a feature, behavior, route, interface, or data-shape change with no spec update is blocking; refactor / build / test-only is informational) `[shipped]`
+- **The spec itself is reviewed too**: missing feature definitions, no stated test expectation for the code being added, no documented folder structure or home for a new file, conventions left to guesswork, undocumented data model or interfaces, missing non-goals, and spec text an earlier merge already made stale all come back as findings against `SPEC.md` `[shipped]`
+- Four supporting lenses: security and data safety, dependencies and supply chain (runs the audit, not just the diff text), correctness and concurrency, style and consistency (runs the project linter and attributes failures to changed vs untouched files) `[shipped]`
+- One consolidated, de-duped verdict: blocking / informational / spec gaps, every finding tagged with the cat that raised it and a one-line spec state in the header `[shipped]`
+- Ships a `/cr` command as the explicit trigger, with the per-lens checklists bundled as `references/` so each lens can be read in full on demand `[shipped]`
+
 ### Skills: break down any public skill (folded into search)
 Point Vaizer at *any* public skill and get the same workflow breakdown, even if it isn't in our catalog. This is no longer a separate page: it is the URL-paste path of the unified search (the old `/skills/inspect` route redirects to `/skills`). *Why:* the visualizer is only as useful as the set of skills it can read; opening it to all public skills (e.g. Anthropic's official ones) makes it a general tool.
 
