@@ -1,22 +1,24 @@
 ---
 name: codereview-spec
-description: Review a change against the project's spec, and review the spec itself. Point it at a GitHub pull request link, a PR number, a branch, your uncommitted work, or a spec file. Diff mode checks both directions, whether the code does what SPEC.md says (scope, vocabulary, no half-built feature marked shipped) and whether the spec was updated to record the change. Spec mode audits a SPEC.md / TASKS.md / PRD on its own for missing feature definitions, absent test expectations, undocumented folder structure and conventions, undefined data model, missing non-goals, contradictions, placeholders, and text an earlier merge already made stale. Use when the user asks whether a change matches the spec, pastes a PR link and asks about spec drift, wants product-intent review, or asks to review or audit a spec. Trigger on "does this match the spec", "review this PR against SPEC.md", "did we update the spec", "spec drift", "review my spec", "what is missing from the spec".
+description: Review a change against its stated intent, and review the spec itself. Two modes, auto-detected. Diff mode reads both statements of intent, the PR description (the goal and the value it claims) and SPEC.md, then checks that the code delivers the stated goal, that it matches the spec, and that the spec was updated to record it. A change conflicting with a feature the spec still describes is reported as a stale spec; a PR with no description gets one drafted. Spec mode audits a SPEC.md / TASKS.md / PRD on its own for missing feature definitions, absent test expectations, undocumented structure and conventions, undefined data model, missing non-goals, contradictions, placeholders, and stale text. Use when the user asks whether a change matches the spec or does what its PR says, wants spec-drift or product-intent review, or asks to audit a spec. Trigger on "does this match the spec", "does this PR do what it says", "did we update the spec", "spec drift", "review my spec", "what is missing from the spec".
 license: MIT
 allowed-tools: Bash(gh:*) Bash(git:*) Read Grep Glob
 metadata:
   author: Nekko Labs
-  version: 1.1.0
+  version: 1.2.0
   category: engineering
-  tags: code-review, spec, spec-conformance, product-intent, drift, documentation, pull-request
+  tags: code-review, spec, spec-conformance, product-intent, pr-description, drift, documentation, pull-request
 ---
 
 # codereview-spec 👻
 
-The spec is what the project promised. This skill is the only reviewer that
-cares about that promise: it never argues with the implementation on its own
-terms (correctness, security, and style reviewers do that). It asks whether this
-is the thing the spec said would be built, and when the spec turns out to say
-nothing at all, it says so rather than passing quietly.
+What a change was *supposed* to do is written down in two places: the PR
+description says what this change is for and what improves because of it, the
+spec says what the product is. This skill is the only reviewer that cares about
+those promises: it never argues with the implementation on its own terms
+(correctness, security, and style reviewers do that). It asks whether this is
+the thing that was said would be built, and when nothing says what that was, it
+says so rather than passing quietly.
 
 The deep checklist lives in `references/spec-review.md` next to this file.
 
@@ -63,6 +65,32 @@ gh api "repos/{owner}/{repo}/pulls/{n}/files" --paginate \
 
 If the PR's repo has no readable spec, say so and stop. Never fall back to a
 local spec from a different project.
+
+## Step 1b (diff mode): read the PR description
+
+The description is the author's account of what this change is for, and the only
+place the **value** of a change is written down. Read it before the diff.
+
+```bash
+gh pr view {n} --json title,url,body -q '.title, .url, .body'
+```
+
+Take three things from it: the **goal** (one sentence, what this should
+accomplish), the **product context and value** (who it is for, what improves for
+them), and the **claims** (each specific thing it says the change does).
+
+**No description** (empty body, unfilled template, "fix", a bare issue link) is a
+finding: **blocking** when the diff changes behavior, a feature, a route, an
+interface, or a data shape, informational for refactor / build / test-only work.
+Without a stated goal nobody can say whether the change did its job. Ask for one
+and draft it from the diff as a copy-pasteable block (what changed, why and for
+whom, what to look at, how to verify), offered in the verdict rather than posted
+to the PR. **Never grade the diff against a description you wrote**: it came from
+the code, so the code passes it by construction, the same trap as
+reverse-engineering a spec. The `Goal:` line then reads `no description given`.
+
+With no PR, take the goal from the branch name and `git log origin/{base}..`,
+say so in the header, and treat what commits omit as unknown rather than as met.
 
 ## Step 2: find the spec
 
@@ -116,9 +144,35 @@ Three states, three verdicts:
 Also check the task checklist: a shipped feature with no entry moved to Shipped,
 or a box ticked for work this diff does not actually finish.
 
-## Step 4 (diff mode): code vs product intent
+## Step 4 (diff mode): code vs stated intent
 
-For every feature the diff touches:
+First against the PR description. Trace the claimed effect through the diff to
+where a user reaches it: the fix has to be on the path they actually hit, the
+flag has to be read, the query made faster has to be the one that was slow.
+
+- **Goal not met**, or a claim the description makes that the diff does not
+  contain: **blocking**. A description is read as a promise by reviewers and by
+  whoever writes the release notes.
+- **Substantial work the description never mentions**: unexplained scope. Ask for
+  a sentence covering it, or for it to come out.
+- **A description with no "why"**: informational, ask for the value. Without it
+  nobody after the merge can judge whether the change was worth its risk.
+- Report `met` / `partially met` / `not met` in the verdict header.
+
+### A conflict with the spec usually means a stale spec
+
+When the description says the product now does X and the spec still says it does
+Y, that is a conflict, and the cause is almost always a spec nobody updated
+rather than an implementation that went rogue. Report it against the spec, not
+the code: `[SPEC.md § Feature] still says Y; this change makes it X`, with the
+sentence the section should now carry. It is **blocking** either way, because a
+spec describing the old behavior is not incomplete, it is wrong. The exception is
+a conflict with a stated **non-goal, success criterion, or scope boundary**:
+quote the line and ask the author whether the boundary moved or the change did.
+If description and spec disagree and the code matches neither, say exactly that
+rather than picking a winner.
+
+Then against the spec. For every feature the diff touches:
 
 - **Recorded?** Is the feature in the spec at all? A whole feature landing with
   no spec entry is drift at feature scale.
@@ -169,6 +223,7 @@ add.
 ```
 👻 codereview-spec · <diff|spec> mode · N findings (X blocking, Y informational)
 Target: <owner/repo#123 | branch | working diff | path/to/SPEC.md>
+Goal: "<the stated goal>" → met / partially met / not met   (diff mode only)
 Spec: <updated in this change / not updated (drift) / no spec file found>
 Read: SPEC.md, TASKS.md
 
@@ -183,12 +238,17 @@ Informational
 Spec gaps
 - [SPEC.md § section] what the spec should define and does not
   Fix: the sentence to add
+
+Suggested PR description
+<copy-pasteable draft, only when the PR has none>
 ```
 
 Be terse: one line for the problem, one for the fix. Quote the spec whenever the
 finding is drift, so the reader sees both sides. Skip anything that is fine, and
 never write "the spec looks good overall". The `Target:` and `Spec:` lines are
-always present. Omit a section that has no findings. If everything is clean:
+always present, and `Goal:` whenever the mode is diff (`no description given`
+for an empty PR body, `from commits: "..."` when there is no PR). Omit a section
+that has no findings, and the suggested description unless the PR lacked one. If everything is clean:
 `👻 codereview-spec · no findings.`
 
 ## Note
