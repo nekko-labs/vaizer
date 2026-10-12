@@ -92,7 +92,7 @@ The installable skills in the catalog live in this repo, under `plugins/`, and t
 
 - This repo is a marketplace: `.claude-plugin/marketplace.json` + a single `plugins/vaizer/` plugin holding every skill under `skills/<skill>/`, installed in one step with `/plugin install vaizer@vaizer` `[shipped]`
 - **One bundled plugin, not one plugin per skill** (changed 2026-08-28): Claude Code namespaces plugin skills as `plugin-name:skill-name`, so a plugin per skill invoked as `/codereview-spec:codereview-spec`, repeating itself. Naming the plugin after the marketplace gives `/vaizer:codereview-spec`, `/vaizer:nyaa`, `/vaizer:cr`, `/vaizer:domain-finder`, `/vaizer:resume-checker`. The trade is that installing takes all skills at once rather than one at a time, and every session carries all their descriptions (about 740 always-on tokens rather than about 160 for one) `[shipped]`
-- `catalog.json` at the repo root: a machine-readable index of the installable skills, read raw from GitHub by outside consumers (Kotrain's skills shelf) `[shipped]`
+- `catalog.json` at the repo root: a machine-readable index of the installable skills, read raw from GitHub by outside consumers (Nekko Agent's skills shelf) `[shipped]`
 - Community contribution flow: anyone can submit a skill by pull request; static structure/frontmatter validation and a skill-specific security lint run on a powerless untrusted-PR workflow, then a Nekko Labs maintainer reviews under CODEOWNERS `[shipped]`
 - Trust tiers are declared here and mirrored on the site: Nekko official, community, curated (link-only, not re-hosted) `[shipped]`
 - The per-skill `.zip` download reads the plugin folder out of this repo at request time `[shipped]`
